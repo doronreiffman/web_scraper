@@ -7,7 +7,18 @@ Relevant information includes:
 * Metascore
 * User score
 * Link to individual album page
-Author: Doron Reiffman
+* Link to artist page
+* Publisher name
+* Link to publisher's Metacritic page
+* Link to image of album cover
+* Listed genres on album
+* Number of critic reviews
+* Link to critic review page
+* Number of user reviews
+* Link to user review page
+* Link to page with additional details and album credits
+* Link to Amazon purchase page
+Author: Doron Reiffman & Yair Vagshal
 """
 import requests
 from bs4 import BeautifulSoup
@@ -107,33 +118,39 @@ def scrape_album_page(pages_url):
 
         # Scraping additional details and adding them to dictionary
         # Scraping the link to the artist page
-        album_details_dict.setdefault('Link to Artist Page', []).append(SITE_ADDRESS + soup.find('div', class_='product_artist').a['href'])
+        album_details_dict.setdefault('Link to Artist Page', []).append(
+            SITE_ADDRESS + soup.find('div', class_='product_artist').a['href'])
 
         # Scraping the publisher name and link to the publisher's Metacritic page
         publisher_html = soup.find('span', class_='data', itemprop='publisher')
         album_details_dict.setdefault('Publisher', []).append(publisher_html.a.span.text.strip())
-        album_details_dict.setdefault('Link to Publisher Page', []).append([SITE_ADDRESS + publisher_html.a['href']])
+        album_details_dict.setdefault('Link to Publisher Page', []).append(SITE_ADDRESS + publisher_html.a['href'])
 
         # Scraping the link to the image of the album cover
-        # TODO: FIX (currently giving publisher page)
-        album_details_dict.setdefault('Album Cover Image', []).append(publisher_html.a.span.text.strip())
+        album_details_dict.setdefault('Album Cover Image', []).append(
+            soup.find('img', class_='product_image large_image')['src'])
 
         # Scraping the genres listed on the album
         genres = soup.find('li', class_='summary_detail product_genre')
-        album_details_dict.setdefault('Album Genres', []).append('\n'.join([genre.text.lstrip("Genre(s): ") for genre in genres.findAll('span')]))
+        album_details_dict.setdefault('Album Genres', []).append(
+            ' '.join([genre.text for genre in genres.findAll('span')]).lstrip("Genre(s): \n"))
 
         # Scraping number of critic reviews and the link to the critic review page
-        album_details_dict.setdefault('No. of Critic Reviews', []).append(soup.find('span', itemprop="reviewCount").text.strip())
+        album_details_dict.setdefault('No. of Critic Reviews', []).append(
+            soup.find('span', itemprop="reviewCount").text.strip())
         album_details_dict.setdefault('Link to Critic Reviews', []).append(
             SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
 
-        # Scraping number of user reviews and the link to the user review page
+        # Scraping number of user reviews
         # If there is no number of user scores, add an empty cell
         try:
             user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
-            album_details_dict.setdefault('No. of User Reviews', []).append(user_score_html.find('span', class_='count').a.text)
-        except Exception:
+            album_details_dict.setdefault('No. of User Reviews', []).append(
+                user_score_html.find('span', class_='count').a.text.rstrip(' Ratings'))
+        except AttributeError:
             album_details_dict.setdefault('No. of User Reviews', []).append('')
+
+        # Scraping link to the user review page
         album_details_dict.setdefault('Link to User Reviews', []).append(
             SITE_ADDRESS + soup.find('li', class_='nav nav_user_reviews').span.span.a["href"])
 
