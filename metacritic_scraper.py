@@ -33,91 +33,123 @@ def scrape(page_url):
     str_to_strip_from_beg = "\n                                    by "
     str_to_strip_from_end = "\n                                "
 
-    #  Album name and Link text
+    #  Scraping album name
     album_name_text = soup.find_all('a', class_='title')
     album_names = [i.find("h3").get_text() for i in album_name_text]
 
-    # Artist name
+    # Scraping artist name
     artist_name_text = soup.find_all('div', class_='artist')
     artist_names = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in artist_name_text]
 
-    # Critic score (Metascore)
+    # Scraping critic score (Metascore)
     metascore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w large'))
     metascores = [i.get_text() for i in metascore_text[::2]]
 
-    # User score
+    # Scraping user score
     userscore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w user'))
     userscores = [i.get_text() for i in userscore_text]
 
-    # Release dates
+    # Scraping release dates
     release_date_text = soup.find_all("div", class_="clamp-details")
     release_dates = [i.find("span").get_text() for i in release_date_text]
 
-    # Summaries
-    summary_text = soup.find_all("div", class_="summary")
-    summaries = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in summary_text]
+    # Scraping album descriptions
+    descriptions_text = soup.find_all("div", class_="summary")
+    summaries = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in descriptions_text]
 
-    # Links
+    # Scraping links to individual album pages (for use later)
     links = [(SITE_ADDRESS + i["href"]) for i in album_name_text]
 
-    summery = ({"Album": album_names,
-                "Artist": artist_names,
-                "Metascore": metascores,
-                "User Score": userscores,
-                "Release Date": release_dates,
-                "Summary": summaries,
-                "Link to Album Page": links})
+    # Build initial dictionary with preliminary information (info you can find on the main chart page)
+    summary_dict = ({"Album": album_names,
+                     "Artist": artist_names,
+                     "Metascore": metascores,
+                     "User Score": userscores,
+                     "Release Date": release_dates,
+                     "Summary": summaries,
+                     "Link to Album Page": links})
 
-    summery.update(scrape_album_page(links))
+    # Update dictionary with results of individual album page scraping (see below)
+    summary_dict.update(scrape_album_page(links))
 
-    top_albums = pd.DataFrame(summery)
+    # Turn dictionary with all details into DataFrame (can be removed if pandas is forbidden)
+    top_albums = pd.DataFrame(summary_dict)
+
+    # Create csv file from DataFrame (for better organization)
     top_albums.to_csv("top albums.csv")
     print(top_albums)
 
 
 def scrape_album_page(pages_url):
-    result = {}
+    """
+    Receives each page url from main chart page and scrapes additional details from given url:
+    * Link to artist page
+    * Publisher name
+    * Link to publisher's Metacritic page
+    * Link to image of album cover
+    * Listed genres on album
+    * Number of critic reviews
+    * Link to critic review page
+    * Number of user reviews
+    * Link to user review page
+    * Link to page with additional details and album credits
+    * Link to Amazon purchase page
+    """
+    # Build the dictionary of details we're scraping from each individual album page
+    album_details_dict = {}
+
+    # iterate over
     for url in pages_url:
 
         # Getting page information
         source = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}).text
         soup = BeautifulSoup(source, 'html.parser')
 
-        result.setdefault('artist_link', []).append(SITE_ADDRESS + soup.find('div', class_='product_artist').a['href'])
+        # Scraping additional details and adding them to dictionary
+        # Scraping the link to the artist page
+        album_details_dict.setdefault('Link to Artist Page', []).append(SITE_ADDRESS + soup.find('div', class_='product_artist').a['href'])
 
+        # Scraping the publisher name and link to the publisher's Metacritic page
         publisher_html = soup.find('span', class_='data', itemprop='publisher')
-        result.setdefault('publisher_link', []).append([SITE_ADDRESS + publisher_html.a['href']])
-        result.setdefault('publisher_name', []).append(publisher_html.a.span.text.strip())
+        album_details_dict.setdefault('Publisher', []).append(publisher_html.a.span.text.strip())
+        album_details_dict.setdefault('Link to Publisher Page', []).append([SITE_ADDRESS + publisher_html.a['href']])
 
-        result.setdefault('album_cover_image', []).append(publisher_html.a.span.text.strip())
+        # Scraping the link to the image of the album cover
+        # TODO: FIX (currently giving publisher page)
+        album_details_dict.setdefault('Album Cover Image', []).append(publisher_html.a.span.text.strip())
 
+        # Scraping the genres listed on the album
+        # TODO: FIX (currently not returning any genres, just a string that says "Genres:")
         genres = soup.find('li', class_='summary_detail product_genre')
-        result.setdefault('genres_list', []).append('\n'.join([genre.text for genre in genres.findAll('span')]))
+        album_details_dict.setdefault('Album Genres', []).append('\n'.join([genre.text for genre in genres.findAll('span')]))
 
-        result.setdefault('meta_score_count', []).append(soup.find('span', itemprop="reviewCount").text.strip())
-        result.setdefault('meta_score_link', []).append(
+        # Scraping number of critic reviews and the link to the critic review page
+        album_details_dict.setdefault('No. of Critic Reviews', []).append(soup.find('span', itemprop="reviewCount").text.strip())
+        album_details_dict.setdefault('Link to Critic Reviews', []).append(
             SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
 
-        result.setdefault('user_score_link', []).append(
-            SITE_ADDRESS + soup.find('li', class_='nav nav_user_reviews').span.span.a["href"])
-
+        # TODO: Why is there an exception check here?
+        # Scraping number of user reviews and the link to the user review page
         try:
             user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
-            result.setdefault('user_score_count', []).append(user_score_html.find('span', class_='count').a.text)
+            album_details_dict.setdefault('No. of User Reviews', []).append(user_score_html.find('span', class_='count').a.text)
         except Exception:
-            result.setdefault('user_score_count', []).append('')
+            album_details_dict.setdefault('No. of User Reviews', []).append('')
+        album_details_dict.setdefault('Link to User Reviews', []).append(
+            SITE_ADDRESS + soup.find('li', class_='nav nav_user_reviews').span.span.a["href"])
 
-        result.setdefault('details_credits_link', []).append(
+        # Scraping the link to page with more album details and album credits
+        album_details_dict.setdefault('Link to More Details and Album Credits', []).append(
             SITE_ADDRESS + soup.find('li', class_="nav nav_details last_nav").span.span.a["href"])
 
-        # Link to Buy the Album
+        # Scraping the link to the Amazon page to buy the album
         buy_album_link = soup.find('td', class_="esite_img_wrapper")
         if buy_album_link:
-            result.setdefault('buy_album_link', []).append(buy_album_link.a["href"])
+            album_details_dict.setdefault('Amazon Link', []).append(buy_album_link.a["href"])
         else:
-            result.setdefault('buy_album_link', []).append('')
+            album_details_dict.setdefault('Amazon Link', []).append('')
 
-    return result
+    return album_details_dict
 
 
 if __name__ == '__main__':

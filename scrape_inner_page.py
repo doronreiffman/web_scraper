@@ -10,7 +10,7 @@ source = requests.get('https://www.metacritic.com/music/fetch-the-bolt-cutters/f
 #source = requests.get('https://www.metacritic.com/music/dont-tread-on-me/311',
  #                     headers={'User-Agent': 'Mozilla/5.0'}).text
 
-soup = BeautifulSoup(source, 'lxml')
+soup = BeautifulSoup(source, 'html.parser')
 
 # Title (Album)
 title_name = soup.find('div', class_='product_title').a.span.h1.text
