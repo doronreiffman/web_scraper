@@ -119,7 +119,7 @@ def scrape_album_page(pages_url):
         album_details_dict.setdefault('Album Cover Image', []).append(publisher_html.a.span.text.strip())
 
         # Scraping the genres listed on the album
-        # TODO: FIX (currently not returning any genres, just a string that says "Genres:")
+        # TODO: FIX (maybe remove "Genres:"?)
         genres = soup.find('li', class_='summary_detail product_genre')
         album_details_dict.setdefault('Album Genres', []).append('\n'.join([genre.text for genre in genres.findAll('span')]))
 
@@ -128,7 +128,6 @@ def scrape_album_page(pages_url):
         album_details_dict.setdefault('Link to Critic Reviews', []).append(
             SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
 
-        # TODO: Why is there an exception check here?
         # Scraping number of user reviews and the link to the user review page
         try:
             user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
