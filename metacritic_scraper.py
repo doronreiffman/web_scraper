@@ -121,7 +121,7 @@ def scrape_album_page(pages_url):
         # Scraping the genres listed on the album
         # TODO: FIX (maybe remove "Genres:"?)
         genres = soup.find('li', class_='summary_detail product_genre')
-        album_details_dict.setdefault('Album Genres', []).append('\n'.join([genre.text for genre in genres.findAll('span')]))
+        album_details_dict.setdefault('Album Genres', []).append('\n'.join([genre.text.lstrip("Genre(s): ") for genre in genres.findAll('span')]))
 
         # Scraping number of critic reviews and the link to the critic review page
         album_details_dict.setdefault('No. of Critic Reviews', []).append(soup.find('span', itemprop="reviewCount").text.strip())
@@ -129,6 +129,7 @@ def scrape_album_page(pages_url):
             SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
 
         # Scraping number of user reviews and the link to the user review page
+        # If there is no number of user scores, add an empty cell
         try:
             user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
             album_details_dict.setdefault('No. of User Reviews', []).append(user_score_html.find('span', class_='count').a.text)
@@ -142,6 +143,7 @@ def scrape_album_page(pages_url):
             SITE_ADDRESS + soup.find('li', class_="nav nav_details last_nav").span.span.a["href"])
 
         # Scraping the link to the Amazon page to buy the album
+        # If there is no Amazon link, add an empty cell
         buy_album_link = soup.find('td', class_="esite_img_wrapper")
         if buy_album_link:
             album_details_dict.setdefault('Amazon Link', []).append(buy_album_link.a["href"])
