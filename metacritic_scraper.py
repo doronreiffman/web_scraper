@@ -58,12 +58,7 @@ def scrape(page_url):
     summaries = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in summary_text]
 
     # Links
-<<<<<<< HEAD
-    site_name = "https://metacritic.com"
-    links = [(site_name + i["href"]) for i in album_name_text]
-=======
     links = [(SITE_ADDRESS + i["href"]) for i in album_name_text]
->>>>>>> 31ca876 (combine both functions in metacritic_scraper.py)
 
     summery = ({"Album": album_names,
                 "Artist": artist_names,
