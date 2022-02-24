@@ -58,7 +58,7 @@ def scrape(page_url):
     summaries = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in summary_text]
 
     # Links
-    site_name = "metacritic.com"
+    site_name = "https://metacritic.com"
     links = [(site_name + i["href"]) for i in album_name_text]
 
 
