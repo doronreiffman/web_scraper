@@ -119,7 +119,6 @@ def scrape_album_page(pages_url):
         album_details_dict.setdefault('Album Cover Image', []).append(publisher_html.a.span.text.strip())
 
         # Scraping the genres listed on the album
-        # TODO: FIX (maybe remove "Genres:"?)
         genres = soup.find('li', class_='summary_detail product_genre')
         album_details_dict.setdefault('Album Genres', []).append('\n'.join([genre.text.lstrip("Genre(s): ") for genre in genres.findAll('span')]))
 
