@@ -141,7 +141,7 @@ def scrape_album_page(pages_url):
         album_details_dict.setdefault('Link to Critic Reviews', []).append(
             SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
 
-        # Scraping number of user reviews
+        # Scraping number of user reviews 
         # If there is no number of user scores, add an empty cell
         try:
             user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
