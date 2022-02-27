@@ -26,6 +26,46 @@ metacritic_scraper.scraper(https://www.metacritic.com/browse/albums/score/metasc
 ```
 
 
+## Run Locally
+
+### Steps: 
+
+Clone the project
+
+```bash
+  git clone https://github.com/doronreiffman/web_scraper
+```
+
+Go to the project directory
+
+```bash
+  cd web_scraper
+```
+
+Install dependencies
+
+```bash
+  pip install -r requirements.txt
+```
+
+## Screenshots
+
+Version 1 of the program will output a csv file called top_albums.csv in your working directory.
+
+The link in the example produces the csv file shown below (in Pycharm and in Google Sheets, for your convenience.)
+
+![Output in Pycharm](https://github.com/doronreiffman/doronreiffman.github.io/raw/main/output_csv_pycharm.PNG)
+
+
+![Output in Google Sheets](https://github.com/doronreiffman/doronreiffman.github.io/raw/main/output_csv_sheets.PNG)
+
+
+
+## Contributing
+
+Contributions are always welcome!
+
+
 ## Authors
 
 - [@YairVag](https://www.github.com/YairVag)
