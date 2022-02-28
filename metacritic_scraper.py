@@ -124,7 +124,8 @@ def scrape_album_page(pages_url):
         # Scraping the publisher name and link to the publisher's Metacritic page
         publisher_html = soup.find('span', class_='data', itemprop='publisher')
         album_details_dict.setdefault('Publisher', []).append(publisher_html.a.span.text.strip())
-        album_details_dict.setdefault('Link to Publisher Page', []).append(SITE_ADDRESS + publisher_html.a['href'])
+        album_details_dict.setdefault('Link to Publisher Page', []).append(
+            SITE_ADDRESS + publisher_html.a['href'].lstrip("['").rstrip("']"))
 
         # Scraping the link to the image of the album cover
         album_details_dict.setdefault('Album Cover Image', []).append(
