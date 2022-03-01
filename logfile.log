@@ -1,0 +1,3 @@
+2022-03-01 17:47:19,683 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-01 17:47:20,048 DEBUG: https://www.metacritic.com:443 "GET /browse/grape HTTP/1.1" 404 14107
+2022-03-01 17:47:20,061 CRITICAL: https://www.metacritic.com/browse/grape was not requested successfully. Exiting program.

@@ -23,9 +23,13 @@ Author: Doron Reiffman & Yair Vagshal
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import config as cfg
+import logging
 
-URL = "https://www.metacritic.com/browse/albums/score/metascore/all?sort=desc"
-SITE_ADDRESS = "https://www.metacritic.com"
+if cfg.MODE == "debug":
+    logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s", level=logging.DEBUG)
+else:
+    logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s", level=logging.INFO)
 
 
 def scrape(page_url):
@@ -39,6 +43,13 @@ def scrape(page_url):
     * Link to individual album page
     """
     page = requests.get(page_url, headers={'User-Agent': 'Mozilla/5.0'})
+
+    if 200 <= page.status_code <= 299:  # check if there was a successful response
+        logging.info(f"{page_url} was requested successfully.")
+    else:
+        logging.critical(f"{page_url} was not requested successfully. Exiting program.")
+        exit()
+
     soup = BeautifulSoup(page.content, 'html.parser')
     # strings to strip from longer strings of text
     str_to_strip_from_beg = "\n                                    by "
@@ -69,7 +80,7 @@ def scrape(page_url):
     summaries = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in descriptions_text]
 
     # Scraping links to individual album pages (for use later)
-    links = [(SITE_ADDRESS + i["href"]) for i in album_name_text]
+    links = [(cfg.SITE_ADDRESS + i["href"]) for i in album_name_text]
 
     # Build initial dictionary with preliminary information (info you can find on the main chart page)
     summary_dict = ({"Album": album_names,
@@ -88,6 +99,8 @@ def scrape(page_url):
 
     # Create csv file from DataFrame (for better organization)
     top_albums.to_csv("top albums.csv")
+    logging.info(f"CSV file was created. Initial information added.")
+
     print(top_albums)
 
 
@@ -114,18 +127,25 @@ def scrape_album_page(pages_url):
 
         # Getting page information
         source = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}).text
+
+        if 200 <= source.status_code <= 299:  # check if there was a successful response
+            logging.info(f"{url} was requested successfully.")
+        else:
+            logging.critical(f"{url} was not requested successfully. Exiting program.")
+            exit()
+
         soup = BeautifulSoup(source, 'html.parser')
 
         # Scraping additional details and adding them to dictionary
         # Scraping the link to the artist page
         album_details_dict.setdefault('Link to Artist Page', []).append(
-            SITE_ADDRESS + soup.find('div', class_='product_artist').a['href'])
+            cfg.SITE_ADDRESS + soup.find('div', class_='product_artist').a['href'])
 
         # Scraping the publisher name and link to the publisher's Metacritic page
         publisher_html = soup.find('span', class_='data', itemprop='publisher')
         album_details_dict.setdefault('Publisher', []).append(publisher_html.a.span.text.strip())
         album_details_dict.setdefault('Link to Publisher Page', []).append(
-            SITE_ADDRESS + publisher_html.a['href'].lstrip("['").rstrip("']"))
+            cfg.SITE_ADDRESS + publisher_html.a['href'].lstrip("['").rstrip("']"))
 
         # Scraping the link to the image of the album cover
         album_details_dict.setdefault('Album Cover Image', []).append(
@@ -140,7 +160,7 @@ def scrape_album_page(pages_url):
         album_details_dict.setdefault('No. of Critic Reviews', []).append(
             soup.find('span', itemprop="reviewCount").text.strip())
         album_details_dict.setdefault('Link to Critic Reviews', []).append(
-            SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
+            cfg.SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
 
         # Scraping number of user reviews 
         # If there is no number of user scores, add an empty cell
@@ -149,15 +169,16 @@ def scrape_album_page(pages_url):
             album_details_dict.setdefault('No. of User Reviews', []).append(
                 user_score_html.find('span', class_='count').a.text.rstrip(' Ratings'))
         except AttributeError:
+            logging.warning(f"There was no number of user reviews found on {url}. Added an empty cell instead.")
             album_details_dict.setdefault('No. of User Reviews', []).append('')
 
         # Scraping link to the user review page
         album_details_dict.setdefault('Link to User Reviews', []).append(
-            SITE_ADDRESS + soup.find('li', class_='nav nav_user_reviews').span.span.a["href"])
+            cfg.SITE_ADDRESS + soup.find('li', class_='nav nav_user_reviews').span.span.a["href"])
 
         # Scraping the link to page with more album details and album credits
         album_details_dict.setdefault('Link to More Details and Album Credits', []).append(
-            SITE_ADDRESS + soup.find('li', class_="nav nav_details last_nav").span.span.a["href"])
+            cfg.SITE_ADDRESS + soup.find('li', class_="nav nav_details last_nav").span.span.a["href"])
 
         # Scraping the link to the Amazon page to buy the album
         # If there is no Amazon link, add an empty cell
@@ -165,10 +186,11 @@ def scrape_album_page(pages_url):
         if buy_album_link:
             album_details_dict.setdefault('Amazon Link', []).append(buy_album_link.a["href"])
         else:
+            logging.warning(f"There was no Amazon link found on {url}. Added an empty cell instead.")
             album_details_dict.setdefault('Amazon Link', []).append('')
 
     return album_details_dict
 
 
 if __name__ == '__main__':
-    scrape(URL)
+    scrape(cfg.URL)
