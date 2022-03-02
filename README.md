@@ -22,7 +22,6 @@ This program will take any Metacritic music album chart and scrape it for releva
 # based on the following link: 
 # https://www.metacritic.com/browse/albums/score/metascore/all/filtered?sort=desc
 
-metacritic_scraper.scraper(https://www.metacritic.com/browse/albums/score/metascore/all/filtered?sort=desc)
 ```
 
 
