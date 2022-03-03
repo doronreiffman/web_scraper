@@ -26,13 +26,32 @@ import pandas as pd
 import config as cfg
 import logging
 
-if cfg.MODE == "debug":
+if cfg.LOGFILE_DEBUG:
     logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s", level=logging.DEBUG)
 else:
     logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s", level=logging.INFO)
 
 
-def scrape(page_url):
+def use_requests(page_url):
+    """
+    The function gets a list of urls and gets the page/s html
+    :param page_url: a list of link/s to required web page/s
+    :return: a list of strings with html of the page/s
+    """
+
+    page = requests.get(page_url, headers={'User-Agent': 'Mozilla/5.0'})
+
+    # Check if the request status is valid
+    if page.status_code and cfg.REQ_STATUS_LOWER <= page.status_code <= cfg.REQ_STATUS_UPPER:
+        logging.info(f"{page_url} was requested successfully.")
+    else:
+        logging.critical(f"{page_url} was not requested successfully. Exiting program.")
+        raise ValueError(f'The link was not valid for scraping\n{page_url}')
+
+    return BeautifulSoup(page.content, 'html.parser')
+
+
+def scrape():
     """
     Take given url and scrape:
     * Album name
@@ -42,18 +61,10 @@ def scrape(page_url):
     * User score
     * Link to individual album page
     """
-    page = requests.get(page_url, headers={'User-Agent': 'Mozilla/5.0'})
+    logging.debug(f"scrape() started")
 
-    if 200 <= page.status_code <= 299:  # check if there was a successful response
-        logging.info(f"{page_url} was requested successfully.")
-    else:
-        logging.critical(f"{page_url} was not requested successfully. Exiting program.")
-        exit()
-
-    soup = BeautifulSoup(page.content, 'html.parser')
-    # strings to strip from longer strings of text
-    str_to_strip_from_beg = "\n                                    by "
-    str_to_strip_from_end = "\n                                "
+    # Getting page html
+    soup = use_requests(cfg.URL_LIST[cfg.URL_INDEX])
 
     #  Scraping album name
     album_name_text = soup.find_all('a', class_='title')
@@ -61,11 +72,11 @@ def scrape(page_url):
 
     # Scraping artist name
     artist_name_text = soup.find_all('div', class_='artist')
-    artist_names = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in artist_name_text]
+    artist_names = [i.get_text().lstrip(cfg.STRIP_BEGGING).rstrip(cfg.STRIP_END) for i in artist_name_text]
 
     # Scraping critic score (Metascore)
     metascore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w large'))
-    metascores = [i.get_text() for i in metascore_text[::2]]
+    metascores = [i.get_text() for i in metascore_text[::cfg.METASCORE_INC]]
 
     # Scraping user score
     userscore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w user'))
@@ -77,7 +88,7 @@ def scrape(page_url):
 
     # Scraping album descriptions
     descriptions_text = soup.find_all("div", class_="summary")
-    summaries = [i.get_text().lstrip(str_to_strip_from_beg).rstrip(str_to_strip_from_end) for i in descriptions_text]
+    summaries = [i.get_text().lstrip(cfg.STRIP_BEGGING).rstrip(cfg.STRIP_END) for i in descriptions_text]
 
     # Scraping links to individual album pages (for use later)
     links = [(cfg.SITE_ADDRESS + i["href"]) for i in album_name_text]
@@ -119,22 +130,16 @@ def scrape_album_page(pages_url):
     * Link to page with additional details and album credits
     * Link to Amazon purchase page
     """
+    logging.debug(f"scrape_album_page() started")
+
     # Build the dictionary of details we're scraping from each individual album page
     album_details_dict = {}
 
     # iterate over
     for url in pages_url:
 
-        # Getting page information
-        source = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}).text
-
-        if 200 <= source.status_code <= 299:  # check if there was a successful response
-            logging.info(f"{url} was requested successfully.")
-        else:
-            logging.critical(f"{url} was not requested successfully. Exiting program.")
-            exit()
-
-        soup = BeautifulSoup(source, 'html.parser')
+        # Getting page html
+        soup = use_requests(url)
 
         # Scraping additional details and adding them to dictionary
         # Scraping the link to the artist page
@@ -192,5 +197,34 @@ def scrape_album_page(pages_url):
     return album_details_dict
 
 
+def test_use_requests():
+    # Test that use_requests is catching an exception
+    test_url = "https://www.metacritic.com/bad_link_for_testing"
+    try:
+        use_requests(test_url)
+    except ValueError:
+        logging.debug(f"test_use_requests(): Caught the exception when using the link in use_requests() {test_url}")
+
+    # Test that use_requests() is not catching an exception
+    test_url = "https://www.metacritic.com/"
+    use_requests("https://www.metacritic.com/")
+    logging.debug(f"test_use_requests(): {test_url} was requested successfully")
+
+
+def main():
+    """
+    main() is first calling test_use_requests() to check
+    if requests package is working properly,
+    And if so, it calls scrape() to scrape the desire page.
+
+    The user can change cfg.URL_INDEX in order to scrape different urls from cfg.URL_LIST
+    """
+    try:
+        test_use_requests()
+        scrape()
+    except ValueError as e:
+        print(e)
+
+
 if __name__ == '__main__':
-    scrape(cfg.URL)
+    main()
