@@ -4,7 +4,7 @@ LOGFILE_DEBUG = True  # When the flag is true the logging level is debug
 
 # URL configuration
 SITE_ADDRESS = "https://www.metacritic.com"
-URL_INDEX = 1  # Choose by URL_INDEX the wanted chart from the list URL_LIST.
+URL_INDEX = 0  # Choose by URL_INDEX the wanted chart from the list URL_LIST.
 URL_LIST = ["https://www.metacritic.com/browse/albums/score/metascore/all?sort=desc",
             "https://www.metacritic.com/browse/albums/score/metascore/year/filtered?sort=desc",
             "https://www.metacritic.com/browse/albums/score/metascore/discussed/filtered?sort=desc&view=detailed"]

@@ -531,3 +531,356 @@
 2022-03-03 11:53:30,340 INFO: https://www.metacritic.com/music/the-alien-coast/st-paul-the-broken-bones was requested successfully.
 2022-03-03 11:53:30,430 WARNING: There was no number of user reviews found on https://www.metacritic.com/music/the-alien-coast/st-paul-the-broken-bones. Added an empty cell instead.
 2022-03-03 11:53:30,446 INFO: CSV file was created. Initial information added.
+2022-03-03 13:02:57,969 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:02:59,792 DEBUG: https://www.metacritic.com:443 "GET /bad_link_for_testing HTTP/1.1" 404 14106
+2022-03-03 13:02:59,823 CRITICAL: https://www.metacritic.com/bad_link_for_testing was not requested successfully. Exiting program.
+2022-03-03 13:02:59,823 DEBUG: test_use_requests(): Properly caught the exception for bad link: https://www.metacritic.com/bad_link_for_testing
+2022-03-03 13:02:59,826 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:00,098 DEBUG: https://www.metacritic.com:443 "GET / HTTP/1.1" 200 22234
+2022-03-03 13:03:00,120 INFO: https://www.metacritic.com/ was requested successfully.
+2022-03-03 13:03:00,260 DEBUG: test_use_requests(): https://www.metacritic.com/ was requested successfully
+2022-03-03 13:03:00,260 DEBUG: scrape() started
+2022-03-03 13:03:00,262 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:00,520 DEBUG: https://www.metacritic.com:443 "GET /browse/albums/score/metascore/all?sort=desc HTTP/1.1" 200 40155
+2022-03-03 13:03:00,559 INFO: https://www.metacritic.com/browse/albums/score/metascore/all?sort=desc was requested successfully.
+2022-03-03 13:03:01,052 DEBUG: scrape_album_page() started
+2022-03-03 13:03:01,054 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:01,753 DEBUG: https://www.metacritic.com:443 "GET /music/ten-freedom-summers/wadada-leo-smith HTTP/1.1" 200 25604
+2022-03-03 13:03:01,775 INFO: https://www.metacritic.com/music/ten-freedom-summers/wadada-leo-smith was requested successfully.
+2022-03-03 13:03:01,970 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:03,335 DEBUG: https://www.metacritic.com:443 "GET /music/fetch-the-bolt-cutters/fiona-apple HTTP/1.1" 200 26551
+2022-03-03 13:03:03,360 INFO: https://www.metacritic.com/music/fetch-the-bolt-cutters/fiona-apple was requested successfully.
+2022-03-03 13:03:03,570 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:04,304 DEBUG: https://www.metacritic.com:443 "GET /music/smile/brian-wilson HTTP/1.1" 200 25640
+2022-03-03 13:03:04,326 INFO: https://www.metacritic.com/music/smile/brian-wilson was requested successfully.
+2022-03-03 13:03:04,512 WARNING: There was no Amazon link found on https://www.metacritic.com/music/smile/brian-wilson. Added an empty cell instead.
+2022-03-03 13:03:04,516 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:05,191 DEBUG: https://www.metacritic.com:443 "GET /music/van-lear-rose/loretta-lynn HTTP/1.1" 200 25629
+2022-03-03 13:03:05,214 INFO: https://www.metacritic.com/music/van-lear-rose/loretta-lynn was requested successfully.
+2022-03-03 13:03:05,422 WARNING: There was no Amazon link found on https://www.metacritic.com/music/van-lear-rose/loretta-lynn. Added an empty cell instead.
+2022-03-03 13:03:05,424 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:05,775 DEBUG: https://www.metacritic.com:443 "GET /music/to-pimp-a-butterfly/kendrick-lamar HTTP/1.1" 200 29721
+2022-03-03 13:03:05,804 INFO: https://www.metacritic.com/music/to-pimp-a-butterfly/kendrick-lamar was requested successfully.
+2022-03-03 13:03:06,008 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:07,186 DEBUG: https://www.metacritic.com:443 "GET /music/ghosteen/nick-cave-the-bad-seeds HTTP/1.1" 200 26361
+2022-03-03 13:03:07,257 INFO: https://www.metacritic.com/music/ghosteen/nick-cave-the-bad-seeds was requested successfully.
+2022-03-03 13:03:07,490 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:08,195 DEBUG: https://www.metacritic.com:443 "GET /music/histoire-de-melody-nelson/serge-gainsbourg HTTP/1.1" 200 24671
+2022-03-03 13:03:08,219 INFO: https://www.metacritic.com/music/histoire-de-melody-nelson/serge-gainsbourg was requested successfully.
+2022-03-03 13:03:08,390 WARNING: There was no Amazon link found on https://www.metacritic.com/music/histoire-de-melody-nelson/serge-gainsbourg. Added an empty cell instead.
+2022-03-03 13:03:08,393 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:08,757 DEBUG: https://www.metacritic.com:443 "GET /music/damn/kendrick-lamar HTTP/1.1" 200 30328
+2022-03-03 13:03:08,791 INFO: https://www.metacritic.com/music/damn/kendrick-lamar was requested successfully.
+2022-03-03 13:03:09,073 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:09,813 DEBUG: https://www.metacritic.com:443 "GET /music/stankonia/outkast HTTP/1.1" 200 26317
+2022-03-03 13:03:09,837 INFO: https://www.metacritic.com/music/stankonia/outkast was requested successfully.
+2022-03-03 13:03:10,038 WARNING: There was no Amazon link found on https://www.metacritic.com/music/stankonia/outkast. Added an empty cell instead.
+2022-03-03 13:03:10,041 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:10,875 DEBUG: https://www.metacritic.com:443 "GET /music/rough-and-rowdy-ways/bob-dylan HTTP/1.1" 200 28362
+2022-03-03 13:03:10,904 INFO: https://www.metacritic.com/music/rough-and-rowdy-ways/bob-dylan was requested successfully.
+2022-03-03 13:03:11,115 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:11,447 DEBUG: https://www.metacritic.com:443 "GET /music/black-messiah/dangelo HTTP/1.1" 200 26597
+2022-03-03 13:03:11,478 INFO: https://www.metacritic.com/music/black-messiah/dangelo was requested successfully.
+2022-03-03 13:03:11,699 WARNING: There was no Amazon link found on https://www.metacritic.com/music/black-messiah/dangelo. Added an empty cell instead.
+2022-03-03 13:03:11,705 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:12,062 DEBUG: https://www.metacritic.com:443 "GET /music/conflict-of-interest/ghetts HTTP/1.1" 200 26027
+2022-03-03 13:03:12,090 INFO: https://www.metacritic.com/music/conflict-of-interest/ghetts was requested successfully.
+2022-03-03 13:03:12,290 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:12,975 DEBUG: https://www.metacritic.com:443 "GET /music/skeleton-tree/nick-cave-the-bad-seeds HTTP/1.1" 200 27935
+2022-03-03 13:03:12,993 INFO: https://www.metacritic.com/music/skeleton-tree/nick-cave-the-bad-seeds was requested successfully.
+2022-03-03 13:03:13,201 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:14,018 DEBUG: https://www.metacritic.com:443 "GET /music/savane/ali-farka-toure HTTP/1.1" 200 25363
+2022-03-03 13:03:14,044 INFO: https://www.metacritic.com/music/savane/ali-farka-toure was requested successfully.
+2022-03-03 13:03:14,351 WARNING: There was no Amazon link found on https://www.metacritic.com/music/savane/ali-farka-toure. Added an empty cell instead.
+2022-03-03 13:03:14,353 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:14,702 DEBUG: https://www.metacritic.com:443 "GET /music/my-beautiful-dark-twisted-fantasy/kanye-west HTTP/1.1" 200 27721
+2022-03-03 13:03:14,732 INFO: https://www.metacritic.com/music/my-beautiful-dark-twisted-fantasy/kanye-west was requested successfully.
+2022-03-03 13:03:14,938 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:15,735 DEBUG: https://www.metacritic.com:443 "GET /music/madvillainy/madvillain HTTP/1.1" 200 26094
+2022-03-03 13:03:15,754 INFO: https://www.metacritic.com/music/madvillainy/madvillain was requested successfully.
+2022-03-03 13:03:15,949 WARNING: There was no Amazon link found on https://www.metacritic.com/music/madvillainy/madvillain. Added an empty cell instead.
+2022-03-03 13:03:15,951 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:17,138 DEBUG: https://www.metacritic.com:443 "GET /music/a-crow-looked-at-me/mount-eerie HTTP/1.1" 200 27821
+2022-03-03 13:03:17,164 INFO: https://www.metacritic.com/music/a-crow-looked-at-me/mount-eerie was requested successfully.
+2022-03-03 13:03:17,395 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:18,144 DEBUG: https://www.metacritic.com:443 "GET /music/room-25/noname HTTP/1.1" 200 26845
+2022-03-03 13:03:18,164 INFO: https://www.metacritic.com/music/room-25/noname was requested successfully.
+2022-03-03 13:03:18,341 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:19,035 DEBUG: https://www.metacritic.com:443 "GET /music/live-at-reading/nirvana HTTP/1.1" 200 25842
+2022-03-03 13:03:19,066 INFO: https://www.metacritic.com/music/live-at-reading/nirvana was requested successfully.
+2022-03-03 13:03:19,241 WARNING: There was no Amazon link found on https://www.metacritic.com/music/live-at-reading/nirvana. Added an empty cell instead.
+2022-03-03 13:03:19,243 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:19,913 DEBUG: https://www.metacritic.com:443 "GET /music/love-and-theft/bob-dylan HTTP/1.1" 200 25708
+2022-03-03 13:03:19,932 INFO: https://www.metacritic.com/music/love-and-theft/bob-dylan was requested successfully.
+2022-03-03 13:03:20,129 WARNING: There was no Amazon link found on https://www.metacritic.com/music/love-and-theft/bob-dylan. Added an empty cell instead.
+2022-03-03 13:03:20,132 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:20,770 DEBUG: https://www.metacritic.com:443 "GET /music/my-dusty-road/woody-guthrie HTTP/1.1" 200 24504
+2022-03-03 13:03:20,792 INFO: https://www.metacritic.com/music/my-dusty-road/woody-guthrie was requested successfully.
+2022-03-03 13:03:21,061 WARNING: There was no Amazon link found on https://www.metacritic.com/music/my-dusty-road/woody-guthrie. Added an empty cell instead.
+2022-03-03 13:03:21,063 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:21,740 DEBUG: https://www.metacritic.com:443 "GET /music/on-the-impossible-past/the-menzingers HTTP/1.1" 200 26448
+2022-03-03 13:03:21,762 INFO: https://www.metacritic.com/music/on-the-impossible-past/the-menzingers was requested successfully.
+2022-03-03 13:03:21,973 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:22,332 DEBUG: https://www.metacritic.com:443 "GET /music/prioritise-pleasure/self-esteem HTTP/1.1" 200 26007
+2022-03-03 13:03:22,354 INFO: https://www.metacritic.com/music/prioritise-pleasure/self-esteem was requested successfully.
+2022-03-03 13:03:22,534 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:23,566 DEBUG: https://www.metacritic.com:443 "GET /music/lemonade/beyonce HTTP/1.1" 200 27544
+2022-03-03 13:03:23,588 INFO: https://www.metacritic.com/music/lemonade/beyonce was requested successfully.
+2022-03-03 13:03:23,795 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:24,067 DEBUG: https://www.metacritic.com:443 "GET /music/ants-from-up-there/black-country-new-road HTTP/1.1" 200 26371
+2022-03-03 13:03:24,090 INFO: https://www.metacritic.com/music/ants-from-up-there/black-country-new-road was requested successfully.
+2022-03-03 13:03:24,270 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:24,979 DEBUG: https://www.metacritic.com:443 "GET /music/pull-up-some-dust-and-sit-down/ry-cooder HTTP/1.1" 200 26194
+2022-03-03 13:03:24,983 INFO: https://www.metacritic.com/music/pull-up-some-dust-and-sit-down/ry-cooder was requested successfully.
+2022-03-03 13:03:25,212 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:26,011 DEBUG: https://www.metacritic.com:443 "GET /music/sunbather/deafheaven HTTP/1.1" 200 27530
+2022-03-03 13:03:26,038 INFO: https://www.metacritic.com/music/sunbather/deafheaven was requested successfully.
+2022-03-03 13:03:26,303 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:26,650 DEBUG: https://www.metacritic.com:443 "GET /music/glow-on/turnstile HTTP/1.1" 200 26269
+2022-03-03 13:03:26,670 INFO: https://www.metacritic.com/music/glow-on/turnstile was requested successfully.
+2022-03-03 13:03:26,849 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:27,627 DEBUG: https://www.metacritic.com:443 "GET /music/orphans-brawlers-bawlers-bastards/tom-waits HTTP/1.1" 200 25009
+2022-03-03 13:03:27,648 INFO: https://www.metacritic.com/music/orphans-brawlers-bawlers-bastards/tom-waits was requested successfully.
+2022-03-03 13:03:27,826 WARNING: There was no Amazon link found on https://www.metacritic.com/music/orphans-brawlers-bawlers-bastards/tom-waits. Added an empty cell instead.
+2022-03-03 13:03:27,829 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:28,184 DEBUG: https://www.metacritic.com:443 "GET /music/time-will-die-and-love-will-bury-it/rolo-tomassi HTTP/1.1" 200 27149
+2022-03-03 13:03:28,211 INFO: https://www.metacritic.com/music/time-will-die-and-love-will-bury-it/rolo-tomassi was requested successfully.
+2022-03-03 13:03:28,406 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:29,144 DEBUG: https://www.metacritic.com:443 "GET /music/boy-in-da-corner/dizzee-rascal HTTP/1.1" 200 26112
+2022-03-03 13:03:29,166 INFO: https://www.metacritic.com/music/boy-in-da-corner/dizzee-rascal was requested successfully.
+2022-03-03 13:03:29,346 WARNING: There was no Amazon link found on https://www.metacritic.com/music/boy-in-da-corner/dizzee-rascal. Added an empty cell instead.
+2022-03-03 13:03:29,349 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:30,241 DEBUG: https://www.metacritic.com:443 "GET /music/you-want-it-darker/leonard-cohen HTTP/1.1" 200 26554
+2022-03-03 13:03:30,266 INFO: https://www.metacritic.com/music/you-want-it-darker/leonard-cohen was requested successfully.
+2022-03-03 13:03:30,467 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:31,257 DEBUG: https://www.metacritic.com:443 "GET /music/channel-orange/frank-ocean HTTP/1.1" 200 26570
+2022-03-03 13:03:31,281 INFO: https://www.metacritic.com/music/channel-orange/frank-ocean was requested successfully.
+2022-03-03 13:03:31,489 WARNING: There was no Amazon link found on https://www.metacritic.com/music/channel-orange/frank-ocean. Added an empty cell instead.
+2022-03-03 13:03:31,492 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:31,846 DEBUG: https://www.metacritic.com:443 "GET /music/the-satanist/behemoth HTTP/1.1" 200 26272
+2022-03-03 13:03:31,869 INFO: https://www.metacritic.com/music/the-satanist/behemoth was requested successfully.
+2022-03-03 13:03:32,158 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:32,494 DEBUG: https://www.metacritic.com:443 "GET /music/elephant/the-white-stripes HTTP/1.1" 200 26123
+2022-03-03 13:03:32,514 INFO: https://www.metacritic.com/music/elephant/the-white-stripes was requested successfully.
+2022-03-03 13:03:32,718 WARNING: There was no Amazon link found on https://www.metacritic.com/music/elephant/the-white-stripes. Added an empty cell instead.
+2022-03-03 13:03:32,720 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:33,068 DEBUG: https://www.metacritic.com:443 "GET /music/were-all-alone-in-this-together/dave HTTP/1.1" 200 25668
+2022-03-03 13:03:33,091 INFO: https://www.metacritic.com/music/were-all-alone-in-this-together/dave was requested successfully.
+2022-03-03 13:03:33,269 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:33,611 DEBUG: https://www.metacritic.com:443 "GET /music/titanic-rising/weyes-blood HTTP/1.1" 200 26811
+2022-03-03 13:03:33,636 INFO: https://www.metacritic.com/music/titanic-rising/weyes-blood was requested successfully.
+2022-03-03 13:03:33,865 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:34,538 DEBUG: https://www.metacritic.com:443 "GET /music/carnage/nick-cave-warren-ellis HTTP/1.1" 200 26862
+2022-03-03 13:03:34,559 INFO: https://www.metacritic.com/music/carnage/nick-cave-warren-ellis was requested successfully.
+2022-03-03 13:03:34,741 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:35,085 DEBUG: https://www.metacritic.com:443 "GET /music/melodrama/lorde HTTP/1.1" 200 27827
+2022-03-03 13:03:35,112 INFO: https://www.metacritic.com/music/melodrama/lorde was requested successfully.
+2022-03-03 13:03:35,301 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:36,023 DEBUG: https://www.metacritic.com:443 "GET /music/speakerboxxxthe-love-below/outkast HTTP/1.1" 200 28248
+2022-03-03 13:03:36,049 INFO: https://www.metacritic.com/music/speakerboxxxthe-love-below/outkast was requested successfully.
+2022-03-03 13:03:36,347 WARNING: There was no Amazon link found on https://www.metacritic.com/music/speakerboxxxthe-love-below/outkast. Added an empty cell instead.
+2022-03-03 13:03:36,349 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:37,021 DEBUG: https://www.metacritic.com:443 "GET /music/set-my-heart-on-fire-immediately/perfume-genius HTTP/1.1" 200 27111
+2022-03-03 13:03:37,036 INFO: https://www.metacritic.com/music/set-my-heart-on-fire-immediately/perfume-genius was requested successfully.
+2022-03-03 13:03:37,210 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:37,553 DEBUG: https://www.metacritic.com:443 "GET /music/red-taylors-version/taylor-swift HTTP/1.1" 200 25796
+2022-03-03 13:03:37,573 INFO: https://www.metacritic.com/music/red-taylors-version/taylor-swift was requested successfully.
+2022-03-03 13:03:37,747 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:38,465 DEBUG: https://www.metacritic.com:443 "GET /music/home-like-noplace-is-there/the-hotelier HTTP/1.1" 200 26155
+2022-03-03 13:03:38,485 INFO: https://www.metacritic.com/music/home-like-noplace-is-there/the-hotelier was requested successfully.
+2022-03-03 13:03:38,669 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:39,313 DEBUG: https://www.metacritic.com:443 "GET /music/good-kid-maad-city/kendrick-lamar HTTP/1.1" 200 27302
+2022-03-03 13:03:39,394 INFO: https://www.metacritic.com/music/good-kid-maad-city/kendrick-lamar was requested successfully.
+2022-03-03 13:03:39,589 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:40,344 DEBUG: https://www.metacritic.com:443 "GET /music/a-grand-dont-come-for-free/the-streets HTTP/1.1" 200 25922
+2022-03-03 13:03:40,379 INFO: https://www.metacritic.com/music/a-grand-dont-come-for-free/the-streets was requested successfully.
+2022-03-03 13:03:40,565 WARNING: There was no Amazon link found on https://www.metacritic.com/music/a-grand-dont-come-for-free/the-streets. Added an empty cell instead.
+2022-03-03 13:03:40,568 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:41,217 DEBUG: https://www.metacritic.com:443 "GET /music/the-myth-of-the-happily-ever-after/biffy-clyro HTTP/1.1" 200 26467
+2022-03-03 13:03:41,240 INFO: https://www.metacritic.com/music/the-myth-of-the-happily-ever-after/biffy-clyro was requested successfully.
+2022-03-03 13:03:41,433 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:42,136 DEBUG: https://www.metacritic.com:443 "GET /music/canto/los-super-seven HTTP/1.1" 200 25442
+2022-03-03 13:03:42,160 INFO: https://www.metacritic.com/music/canto/los-super-seven was requested successfully.
+2022-03-03 13:03:42,423 WARNING: There was no Amazon link found on https://www.metacritic.com/music/canto/los-super-seven. Added an empty cell instead.
+2022-03-03 13:03:42,426 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:43,176 DEBUG: https://www.metacritic.com:443 "GET /music/grey-area/little-simz HTTP/1.1" 200 25955
+2022-03-03 13:03:43,194 INFO: https://www.metacritic.com/music/grey-area/little-simz was requested successfully.
+2022-03-03 13:03:43,381 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:44,021 DEBUG: https://www.metacritic.com:443 "GET /music/sex-death-the-infinite-void/creeper HTTP/1.1" 200 25416
+2022-03-03 13:03:44,048 INFO: https://www.metacritic.com/music/sex-death-the-infinite-void/creeper was requested successfully.
+2022-03-03 13:03:44,231 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:44,936 DEBUG: https://www.metacritic.com:443 "GET /music/the-archandroid/janelle-monae HTTP/1.1" 200 27343
+2022-03-03 13:03:44,961 INFO: https://www.metacritic.com/music/the-archandroid/janelle-monae was requested successfully.
+2022-03-03 13:03:45,140 WARNING: There was no Amazon link found on https://www.metacritic.com/music/the-archandroid/janelle-monae. Added an empty cell instead.
+2022-03-03 13:03:45,143 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:45,480 DEBUG: https://www.metacritic.com:443 "GET /music/gold-grey/baroness HTTP/1.1" 200 26516
+2022-03-03 13:03:45,500 INFO: https://www.metacritic.com/music/gold-grey/baroness was requested successfully.
+2022-03-03 13:03:45,692 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:46,355 DEBUG: https://www.metacritic.com:443 "GET /music/blue-weekend/wolf-alice HTTP/1.1" 200 27320
+2022-03-03 13:03:46,387 INFO: https://www.metacritic.com/music/blue-weekend/wolf-alice was requested successfully.
+2022-03-03 13:03:46,574 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:47,471 DEBUG: https://www.metacritic.com:443 "GET /music/the-guitar-song/jamey-johnson HTTP/1.1" 200 26526
+2022-03-03 13:03:47,494 INFO: https://www.metacritic.com/music/the-guitar-song/jamey-johnson was requested successfully.
+2022-03-03 13:03:47,678 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:48,389 DEBUG: https://www.metacritic.com:443 "GET /music/is-this-it/the-strokes HTTP/1.1" 200 26461
+2022-03-03 13:03:48,411 INFO: https://www.metacritic.com/music/is-this-it/the-strokes was requested successfully.
+2022-03-03 13:03:48,699 WARNING: There was no Amazon link found on https://www.metacritic.com/music/is-this-it/the-strokes. Added an empty cell instead.
+2022-03-03 13:03:48,702 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:49,404 DEBUG: https://www.metacritic.com:443 "GET /music/we-got-it-from-herethank-you-4-your-service/a-tribe-called-quest HTTP/1.1" 200 27230
+2022-03-03 13:03:49,428 INFO: https://www.metacritic.com/music/we-got-it-from-herethank-you-4-your-service/a-tribe-called-quest was requested successfully.
+2022-03-03 13:03:49,628 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:50,530 DEBUG: https://www.metacritic.com:443 "GET /music/from-here-we-go-sublime/the-field HTTP/1.1" 200 25362
+2022-03-03 13:03:50,554 INFO: https://www.metacritic.com/music/from-here-we-go-sublime/the-field was requested successfully.
+2022-03-03 13:03:50,750 WARNING: There was no Amazon link found on https://www.metacritic.com/music/from-here-we-go-sublime/the-field. Added an empty cell instead.
+2022-03-03 13:03:50,753 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:51,020 DEBUG: https://www.metacritic.com:443 "GET /music/feeding-the-machine/binker-moses HTTP/1.1" 200 23329
+2022-03-03 13:03:51,039 INFO: https://www.metacritic.com/music/feeding-the-machine/binker-moses was requested successfully.
+2022-03-03 13:03:51,202 WARNING: There was no number of user reviews found on https://www.metacritic.com/music/feeding-the-machine/binker-moses. Added an empty cell instead.
+2022-03-03 13:03:51,214 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:51,903 DEBUG: https://www.metacritic.com:443 "GET /music/illinois/sufjan-stevens HTTP/1.1" 200 25634
+2022-03-03 13:03:51,921 INFO: https://www.metacritic.com/music/illinois/sufjan-stevens was requested successfully.
+2022-03-03 13:03:52,122 WARNING: There was no Amazon link found on https://www.metacritic.com/music/illinois/sufjan-stevens. Added an empty cell instead.
+2022-03-03 13:03:52,124 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:52,461 DEBUG: https://www.metacritic.com:443 "GET /music/carrie-lowell/sufjan-stevens HTTP/1.1" 200 26791
+2022-03-03 13:03:52,479 INFO: https://www.metacritic.com/music/carrie-lowell/sufjan-stevens was requested successfully.
+2022-03-03 13:03:52,663 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:53,331 DEBUG: https://www.metacritic.com:443 "GET /music/jimmy-lee/raphael-saadiq HTTP/1.1" 200 25085
+2022-03-03 13:03:53,350 INFO: https://www.metacritic.com/music/jimmy-lee/raphael-saadiq was requested successfully.
+2022-03-03 13:03:53,615 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:53,962 DEBUG: https://www.metacritic.com:443 "GET /music/no-cities-to-love/sleater-kinney HTTP/1.1" 200 28208
+2022-03-03 13:03:53,986 INFO: https://www.metacritic.com/music/no-cities-to-love/sleater-kinney was requested successfully.
+2022-03-03 13:03:54,180 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:54,872 DEBUG: https://www.metacritic.com:443 "GET /music/eve/rapsody HTTP/1.1" 200 25841
+2022-03-03 13:03:54,895 INFO: https://www.metacritic.com/music/eve/rapsody was requested successfully.
+2022-03-03 13:03:55,080 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:55,772 DEBUG: https://www.metacritic.com:443 "GET /music/punisher/phoebe-bridgers HTTP/1.1" 200 26797
+2022-03-03 13:03:55,795 INFO: https://www.metacritic.com/music/punisher/phoebe-bridgers was requested successfully.
+2022-03-03 13:03:55,977 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:56,645 DEBUG: https://www.metacritic.com:443 "GET /music/send-them-to-coventry-mixtape/pa-salieu HTTP/1.1" 200 25435
+2022-03-03 13:03:56,668 INFO: https://www.metacritic.com/music/send-them-to-coventry-mixtape/pa-salieu was requested successfully.
+2022-03-03 13:03:56,839 WARNING: There was no number of user reviews found on https://www.metacritic.com/music/send-them-to-coventry-mixtape/pa-salieu. Added an empty cell instead.
+2022-03-03 13:03:56,857 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:57,553 DEBUG: https://www.metacritic.com:443 "GET /music/original-pirate-material/the-streets HTTP/1.1" 200 25131
+2022-03-03 13:03:57,567 INFO: https://www.metacritic.com/music/original-pirate-material/the-streets was requested successfully.
+2022-03-03 13:03:57,778 WARNING: There was no Amazon link found on https://www.metacritic.com/music/original-pirate-material/the-streets. Added an empty cell instead.
+2022-03-03 13:03:57,781 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:03:58,434 DEBUG: https://www.metacritic.com:443 "GET /music/candi-staton/candi-staton HTTP/1.1" 200 24747
+2022-03-03 13:03:58,455 INFO: https://www.metacritic.com/music/candi-staton/candi-staton was requested successfully.
+2022-03-03 13:03:58,645 WARNING: There was no Amazon link found on https://www.metacritic.com/music/candi-staton/candi-staton. Added an empty cell instead.
+2022-03-03 13:03:58,648 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:01,745 DEBUG: https://www.metacritic.com:443 "GET /music/alice/tom-waits HTTP/1.1" 200 25415
+2022-03-03 13:04:01,766 INFO: https://www.metacritic.com/music/alice/tom-waits was requested successfully.
+2022-03-03 13:04:02,062 WARNING: There was no Amazon link found on https://www.metacritic.com/music/alice/tom-waits. Added an empty cell instead.
+2022-03-03 13:04:02,065 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:02,418 DEBUG: https://www.metacritic.com:443 "GET /music/funeral/arcade-fire HTTP/1.1" 200 26070
+2022-03-03 13:04:02,442 INFO: https://www.metacritic.com/music/funeral/arcade-fire was requested successfully.
+2022-03-03 13:04:02,657 WARNING: There was no Amazon link found on https://www.metacritic.com/music/funeral/arcade-fire. Added an empty cell instead.
+2022-03-03 13:04:02,660 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:03,456 DEBUG: https://www.metacritic.com:443 "GET /music/holy-hell/architects HTTP/1.1" 200 26247
+2022-03-03 13:04:03,481 INFO: https://www.metacritic.com/music/holy-hell/architects was requested successfully.
+2022-03-03 13:04:03,659 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:04,796 DEBUG: https://www.metacritic.com:443 "GET /music/london-zoo/the-bug HTTP/1.1" 200 25536
+2022-03-03 13:04:04,820 INFO: https://www.metacritic.com/music/london-zoo/the-bug was requested successfully.
+2022-03-03 13:04:05,008 WARNING: There was no Amazon link found on https://www.metacritic.com/music/london-zoo/the-bug. Added an empty cell instead.
+2022-03-03 13:04:05,011 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:05,713 DEBUG: https://www.metacritic.com:443 "GET /music/jama-ko/bassekou-kouyate-ngoni-ba HTTP/1.1" 200 24939
+2022-03-03 13:04:05,737 INFO: https://www.metacritic.com/music/jama-ko/bassekou-kouyate-ngoni-ba was requested successfully.
+2022-03-03 13:04:05,925 WARNING: There was no Amazon link found on https://www.metacritic.com/music/jama-ko/bassekou-kouyate-ngoni-ba. Added an empty cell instead.
+2022-03-03 13:04:05,927 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:07,200 DEBUG: https://www.metacritic.com:443 "GET /music/sir-lucious-left-foot-the-son-of-chico-dusty/big-boi HTTP/1.1" 200 27515
+2022-03-03 13:04:07,236 INFO: https://www.metacritic.com/music/sir-lucious-left-foot-the-son-of-chico-dusty/big-boi was requested successfully.
+2022-03-03 13:04:07,415 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:07,772 DEBUG: https://www.metacritic.com:443 "GET /music/psychodrama/dave HTTP/1.1" 200 27713
+2022-03-03 13:04:07,801 INFO: https://www.metacritic.com/music/psychodrama/dave was requested successfully.
+2022-03-03 13:04:07,998 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:08,919 DEBUG: https://www.metacritic.com:443 "GET /music/untrue/burial HTTP/1.1" 200 25688
+2022-03-03 13:04:08,944 INFO: https://www.metacritic.com/music/untrue/burial was requested successfully.
+2022-03-03 13:04:09,229 WARNING: There was no Amazon link found on https://www.metacritic.com/music/untrue/burial. Added an empty cell instead.
+2022-03-03 13:04:09,231 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:09,962 DEBUG: https://www.metacritic.com:443 "GET /music/gra/moses-sumney HTTP/1.1" 200 26480
+2022-03-03 13:04:09,974 INFO: https://www.metacritic.com/music/gra/moses-sumney was requested successfully.
+2022-03-03 13:04:10,162 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:10,503 DEBUG: https://www.metacritic.com:443 "GET /music/xtrmntr/primal-scream HTTP/1.1" 200 25861
+2022-03-03 13:04:10,524 INFO: https://www.metacritic.com/music/xtrmntr/primal-scream was requested successfully.
+2022-03-03 13:04:10,704 WARNING: There was no Amazon link found on https://www.metacritic.com/music/xtrmntr/primal-scream. Added an empty cell instead.
+2022-03-03 13:04:10,706 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:11,388 DEBUG: https://www.metacritic.com:443 "GET /music/spaces/nils-frahm HTTP/1.1" 200 25673
+2022-03-03 13:04:11,410 INFO: https://www.metacritic.com/music/spaces/nils-frahm was requested successfully.
+2022-03-03 13:04:11,586 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:12,287 DEBUG: https://www.metacritic.com:443 "GET /music/z/my-morning-jacket HTTP/1.1" 200 24863
+2022-03-03 13:04:12,309 INFO: https://www.metacritic.com/music/z/my-morning-jacket was requested successfully.
+2022-03-03 13:04:12,506 WARNING: There was no Amazon link found on https://www.metacritic.com/music/z/my-morning-jacket. Added an empty cell instead.
+2022-03-03 13:04:12,509 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:13,236 DEBUG: https://www.metacritic.com:443 "GET /music/st-vincent/st-vincent HTTP/1.1" 200 29103
+2022-03-03 13:04:13,263 INFO: https://www.metacritic.com/music/st-vincent/st-vincent was requested successfully.
+2022-03-03 13:04:13,463 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:14,149 DEBUG: https://www.metacritic.com:443 "GET /music/the-dusk-in-us/converge HTTP/1.1" 200 26798
+2022-03-03 13:04:14,173 INFO: https://www.metacritic.com/music/the-dusk-in-us/converge was requested successfully.
+2022-03-03 13:04:14,433 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:15,126 DEBUG: https://www.metacritic.com:443 "GET /music/like-a-rose/ashley-monroe HTTP/1.1" 200 26064
+2022-03-03 13:04:15,150 INFO: https://www.metacritic.com/music/like-a-rose/ashley-monroe was requested successfully.
+2022-03-03 13:04:15,354 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:16,047 DEBUG: https://www.metacritic.com:443 "GET /music/rtj2/run-the-jewels HTTP/1.1" 200 27633
+2022-03-03 13:04:16,074 INFO: https://www.metacritic.com/music/rtj2/run-the-jewels was requested successfully.
+2022-03-03 13:04:16,281 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:16,994 DEBUG: https://www.metacritic.com:443 "GET /music/rounds/four-tet HTTP/1.1" 200 25094
+2022-03-03 13:04:17,016 INFO: https://www.metacritic.com/music/rounds/four-tet was requested successfully.
+2022-03-03 13:04:17,189 WARNING: There was no Amazon link found on https://www.metacritic.com/music/rounds/four-tet. Added an empty cell instead.
+2022-03-03 13:04:17,192 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:17,979 DEBUG: https://www.metacritic.com:443 "GET /music/neon-golden/the-notwist HTTP/1.1" 200 25517
+2022-03-03 13:04:18,003 INFO: https://www.metacritic.com/music/neon-golden/the-notwist was requested successfully.
+2022-03-03 13:04:18,188 WARNING: There was no Amazon link found on https://www.metacritic.com/music/neon-golden/the-notwist. Added an empty cell instead.
+2022-03-03 13:04:18,191 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:18,848 DEBUG: https://www.metacritic.com:443 "GET /music/since-i-left-you/the-avalanches HTTP/1.1" 200 26156
+2022-03-03 13:04:18,870 INFO: https://www.metacritic.com/music/since-i-left-you/the-avalanches was requested successfully.
+2022-03-03 13:04:19,068 WARNING: There was no Amazon link found on https://www.metacritic.com/music/since-i-left-you/the-avalanches. Added an empty cell instead.
+2022-03-03 13:04:19,071 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:19,814 DEBUG: https://www.metacritic.com:443 "GET /music/honey/robyn HTTP/1.1" 200 28219
+2022-03-03 13:04:19,836 INFO: https://www.metacritic.com/music/honey/robyn was requested successfully.
+2022-03-03 13:04:20,021 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:20,696 DEBUG: https://www.metacritic.com:443 "GET /music/eternity-in-your-arms/creeper HTTP/1.1" 200 26652
+2022-03-03 13:04:20,720 INFO: https://www.metacritic.com/music/eternity-in-your-arms/creeper was requested successfully.
+2022-03-03 13:04:21,052 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:21,791 DEBUG: https://www.metacritic.com:443 "GET /music/kiwanuka/michael-kiwanuka HTTP/1.1" 200 26060
+2022-03-03 13:04:21,817 INFO: https://www.metacritic.com/music/kiwanuka/michael-kiwanuka was requested successfully.
+2022-03-03 13:04:21,998 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:22,706 DEBUG: https://www.metacritic.com:443 "GET /music/modern-times/bob-dylan HTTP/1.1" 200 26733
+2022-03-03 13:04:22,730 INFO: https://www.metacritic.com/music/modern-times/bob-dylan was requested successfully.
+2022-03-03 13:04:22,903 WARNING: There was no Amazon link found on https://www.metacritic.com/music/modern-times/bob-dylan. Added an empty cell instead.
+2022-03-03 13:04:22,906 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:23,255 DEBUG: https://www.metacritic.com:443 "GET /music/legacy!-legacy!/jamila-woods HTTP/1.1" 200 27401
+2022-03-03 13:04:23,280 INFO: https://www.metacritic.com/music/legacy!-legacy!/jamila-woods was requested successfully.
+2022-03-03 13:04:23,482 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:24,322 DEBUG: https://www.metacritic.com:443 "GET /music/apex-predator---easy-meat/napalm-death HTTP/1.1" 200 26710
+2022-03-03 13:04:24,345 INFO: https://www.metacritic.com/music/apex-predator---easy-meat/napalm-death was requested successfully.
+2022-03-03 13:04:24,558 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:25,337 DEBUG: https://www.metacritic.com:443 "GET /music/hobosapiens/john-cale HTTP/1.1" 200 25304
+2022-03-03 13:04:25,363 INFO: https://www.metacritic.com/music/hobosapiens/john-cale was requested successfully.
+2022-03-03 13:04:25,546 WARNING: There was no Amazon link found on https://www.metacritic.com/music/hobosapiens/john-cale. Added an empty cell instead.
+2022-03-03 13:04:25,549 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:26,284 DEBUG: https://www.metacritic.com:443 "GET /music/miss-e-so-addictive/missy-elliott HTTP/1.1" 200 25526
+2022-03-03 13:04:26,307 INFO: https://www.metacritic.com/music/miss-e-so-addictive/missy-elliott was requested successfully.
+2022-03-03 13:04:26,574 WARNING: There was no Amazon link found on https://www.metacritic.com/music/miss-e-so-addictive/missy-elliott. Added an empty cell instead.
+2022-03-03 13:04:26,577 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:27,240 DEBUG: https://www.metacritic.com:443 "GET /music/bloodmoon-i/converge HTTP/1.1" 200 25878
+2022-03-03 13:04:27,264 INFO: https://www.metacritic.com/music/bloodmoon-i/converge was requested successfully.
+2022-03-03 13:04:27,443 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:28,169 DEBUG: https://www.metacritic.com:443 "GET /music/rtj4/run-the-jewels HTTP/1.1" 200 27807
+2022-03-03 13:04:28,220 INFO: https://www.metacritic.com/music/rtj4/run-the-jewels was requested successfully.
+2022-03-03 13:04:28,409 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:28,797 DEBUG: https://www.metacritic.com:443 "GET /music/sawayama/rina-sawayama HTTP/1.1" 200 26311
+2022-03-03 13:04:28,824 INFO: https://www.metacritic.com/music/sawayama/rina-sawayama was requested successfully.
+2022-03-03 13:04:29,033 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:29,965 DEBUG: https://www.metacritic.com:443 "GET /music/black-origami/jlin HTTP/1.1" 200 26597
+2022-03-03 13:04:30,001 INFO: https://www.metacritic.com/music/black-origami/jlin was requested successfully.
+2022-03-03 13:04:30,170 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:30,913 DEBUG: https://www.metacritic.com:443 "GET /music/bachelor-no-2-or-the-last-remains-of-the-dodo/aimee-mann HTTP/1.1" 200 25478
+2022-03-03 13:04:31,314 INFO: https://www.metacritic.com/music/bachelor-no-2-or-the-last-remains-of-the-dodo/aimee-mann was requested successfully.
+2022-03-03 13:04:31,488 WARNING: There was no Amazon link found on https://www.metacritic.com/music/bachelor-no-2-or-the-last-remains-of-the-dodo/aimee-mann. Added an empty cell instead.
+2022-03-03 13:04:31,490 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:34,640 DEBUG: https://www.metacritic.com:443 "GET /music/all-mirrors/angel-olsen HTTP/1.1" 200 26164
+2022-03-03 13:04:34,669 INFO: https://www.metacritic.com/music/all-mirrors/angel-olsen was requested successfully.
+2022-03-03 13:04:34,840 DEBUG: Starting new HTTPS connection (1): www.metacritic.com:443
+2022-03-03 13:04:35,503 DEBUG: https://www.metacritic.com:443 "GET /music/for-those-i-love/for-those-i-love HTTP/1.1" 200 25005
+2022-03-03 13:04:35,527 INFO: https://www.metacritic.com/music/for-those-i-love/for-those-i-love was requested successfully.
+2022-03-03 13:04:35,828 INFO: CSV file was created. Initial information added.

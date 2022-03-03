@@ -60,10 +60,12 @@ def scrape():
     * Metascore
     * User score
     * Link to individual album page
+
+    The user can change cfg.URL_INDEX in order to scrape different urls from cfg.URL_LIST
     """
     logging.debug(f"scrape() started")
 
-    # Getting page html
+    # Getting page html - change URL_INDEX in config file to scrape a different URL in URL_LIST
     soup = use_requests(cfg.URL_LIST[cfg.URL_INDEX])
 
     #  Scraping album name
@@ -135,7 +137,7 @@ def scrape_album_page(pages_url):
     # Build the dictionary of details we're scraping from each individual album page
     album_details_dict = {}
 
-    # iterate over
+    # iterate over urls found on main page
     for url in pages_url:
 
         # Getting page html
@@ -198,26 +200,24 @@ def scrape_album_page(pages_url):
 
 
 def test_use_requests():
-    # Test that use_requests is catching an exception
+    # Tests that use_requests function properly catches an exception for bad links
+    # Should add a debug log to logfile when in debug mode
     test_url = "https://www.metacritic.com/bad_link_for_testing"
     try:
         use_requests(test_url)
     except ValueError:
-        logging.debug(f"test_use_requests(): Caught the exception when using the link in use_requests() {test_url}")
+        logging.debug(f"test_use_requests(): Properly caught the exception for bad link: {test_url}")
 
-    # Test that use_requests() is not catching an exception
+    # Test that use_requests function does not catch an exception for a good link
     test_url = "https://www.metacritic.com/"
-    use_requests("https://www.metacritic.com/")
+    use_requests(test_url)
     logging.debug(f"test_use_requests(): {test_url} was requested successfully")
 
 
 def main():
     """
-    main() is first calling test_use_requests() to check
-    if requests package is working properly,
-    And if so, it calls scrape() to scrape the desire page.
-
-    The user can change cfg.URL_INDEX in order to scrape different urls from cfg.URL_LIST
+    main() first calls test_use_requests to check that the page is being requested properly,
+    Then calls scrape() to scrape the desired page.
     """
     try:
         test_use_requests()
