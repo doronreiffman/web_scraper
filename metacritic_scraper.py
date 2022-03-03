@@ -72,7 +72,7 @@ def scrape():
 
     # Scraping artist name
     artist_name_text = soup.find_all('div', class_='artist')
-    artist_names = [i.get_text().lstrip(cfg.STRIP_BEGGING).rstrip(cfg.STRIP_END) for i in artist_name_text]
+    artist_names = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END) for i in artist_name_text]
 
     # Scraping critic score (Metascore)
     metascore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w large'))
@@ -88,7 +88,7 @@ def scrape():
 
     # Scraping album descriptions
     descriptions_text = soup.find_all("div", class_="summary")
-    summaries = [i.get_text().lstrip(cfg.STRIP_BEGGING).rstrip(cfg.STRIP_END) for i in descriptions_text]
+    summaries = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END) for i in descriptions_text]
 
     # Scraping links to individual album pages (for use later)
     links = [(cfg.SITE_ADDRESS + i["href"]) for i in album_name_text]

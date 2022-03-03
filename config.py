@@ -17,5 +17,5 @@ REQ_STATUS_UPPER = 299
 METASCORE_INC = 2
 
 # strings to strip from longer strings of text
-STRIP_BEGGING = "\n by "
+STRIP_BEG = "\n by "
 STRIP_END = "\n "
