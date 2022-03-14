@@ -67,6 +67,7 @@ def scrape():
     """
     logging.debug(f"scrape() started")
 
+    # uncomment to delete database and create again
     # connection.create_top_albums_db()
 
     with connection.connect_to_db() as cursor:
@@ -103,8 +104,8 @@ def scrape():
         release_date_text = soup.find_all("div", class_="clamp-details")
         release_dates = [datetime.strptime(i.find("span").get_text(), "%B %d, %Y") for i in release_date_text]
 
-        sql_add_albums = "INSERT INTO albums (album_name, album_link, metascore, user_score, release_date) " \
-                         "VALUES (%s, %s, %s, %s, %s)"
+        sql_add_albums = "INSERT INTO albums (album_name, album_link, metascore, user_score, release_date, " \
+                         "scrape_date) VALUES (%s, %s, %s, %s, %s, NOW())"
         for album, link, metascore, userscore, release_date\
                 in zip(album_names, links, metascores, userscores, release_dates):
             cursor.execute(sql_add_albums, (album, link, metascore, userscore, release_date))

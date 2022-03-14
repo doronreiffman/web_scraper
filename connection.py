@@ -28,7 +28,8 @@ def create_top_albums_db():
                                       release_date datetime,\
                                       summary_id int,\
                                       details_and_credits_link varchar(255),\
-                                      amazon_link TEXT\
+                                      amazon_link TEXT,\
+                                      scrape_date datetime\
                                       )"
             sql_create_table_genres = "CREATE TABLE genres (\
                                       genre_id int PRIMARY KEY AUTO_INCREMENT,\
