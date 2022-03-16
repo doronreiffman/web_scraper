@@ -20,118 +20,79 @@ Relevant information includes:
 * Link to Amazon purchase page
 Author: Doron Reiffman & Yair Vagshal
 """
-import requests
+
+import grequests
 from bs4 import BeautifulSoup
 import pandas as pd
 import config as cfg
 import logging
+import argparse
+import os
+from argparse import RawTextHelpFormatter
+import sys
 import connection
 from datetime import datetime
 import add_data_to_db
 
+# Logging definition
 if cfg.LOGFILE_DEBUG:
-    logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s", level=logging.DEBUG)
+    logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s",
+                        level=logging.DEBUG)
 else:
-    logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s", level=logging.INFO)
+    logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s",
+                        level=logging.INFO)
 
 
-def use_requests(page_url):
+def save_csv(args, albums_df):
+    """
+    save_csv() gets a Dataframe with the albums information and saves it to csv file.
+    If the folder cfg.DATA_FOLDER does not exist, it creates it
+    :param args: a Struct with all the input arguments of the py file
+    :param albums_df: a Dataframe with the albums information
+    """
+
+    # Creates folder if not exists
+    if not os.path.exists(cfg.DATA_FOLDER):
+        os.mkdir(cfg.DATA_FOLDER)
+
+    # File name is according to the current we're scraping chart
+    file_name = args.sort + '_' + args.filter + '_' + args.year + '.csv'
+    fullname = os.path.join(cfg.DATA_FOLDER, file_name)
+
+    # Saves the chart information to csv file
+    albums_df.to_csv(fullname)
+    logging.info(f"CSV file was created. Initial information added.")
+
+
+def use_grequests(page_url):
     """
     The function gets a list of urls and gets the page/s html
     :param page_url: a list of link/s to required web page/s
     :return: a list of strings with html of the page/s
     """
 
-    page = requests.get(page_url, headers={'User-Agent': 'Mozilla/5.0'})
+    # Creates a generator of grequests from the page_url list and gets the html/s
+    rs = (grequests.get(u, headers={'User-Agent': 'Mozilla/5.0'}) for u in page_url)
+    pages = grequests.map(rs)
 
     # Check if the request status is valid
-    if page.status_code and cfg.REQ_STATUS_LOWER <= page.status_code <= cfg.REQ_STATUS_UPPER:
-        logging.info(f"{page_url} was requested successfully.")
-    else:
-        logging.critical(f"{page_url} was not requested successfully. Exiting program.")
-        raise ValueError(f'The link was not valid for scraping\n{page_url}')
+    soups = []
+    for i, page in enumerate(pages):
+        try:  # check if there was a successful response
+            if cfg.REQ_STATUS_LOWER <= page.status_code <= cfg.REQ_STATUS_UPPER:
+                logging.info(f"{page_url[i]} was requested successfully.")
+            else:
+                logging.critical(f"{page_url[i]} was not requested successfully. Exiting program.")
+                raise ValueError(f'The link was not valid for scraping\n{page_url[i]}')
+        except AttributeError:
+            logging.critical(f"{page_url[i]} was not requested successfully. Exiting program.")
+            raise AttributeError(f'The link was not valid for scraping\n{page_url[i]}')
+        soups.append(BeautifulSoup(page.content, 'html.parser'))
 
-    return BeautifulSoup(page.content, 'html.parser')
-
-
-def scrape():
-    """
-    Take given url and scrape:
-    * Album name
-    * Artist name
-    * Album release date
-    * Metascore
-    * User score
-    * Link to individual album page
-
-    The user can change cfg.URL_INDEX in order to scrape different urls from cfg.URL_LIST
-    """
-    logging.debug(f"scrape() started")
-
-    # uncomment to delete database and create again
-    # connection.create_top_albums_db()
-
-    # Getting page html - change URL_INDEX in config file to scrape a different URL in URL_LIST
-    soup = use_requests(cfg.URL_LIST[cfg.URL_INDEX])
-
-    #  Scraping album name
-    album_name_text = soup.find_all('a', class_='title')
-    album_names = [i.find("h3").get_text() for i in album_name_text]
-
-    # Scraping links to individual album pages (for use later)
-    links = [(cfg.SITE_ADDRESS + i["href"]) for i in album_name_text]
-
-    # Scraping artist name
-    artist_name_text = soup.find_all('div', class_='artist')
-    artist_names = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END) for i in artist_name_text]
-
-    # Scraping critic score (Metascore)
-    metascore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w large'))
-    metascores = [i.get_text() for i in metascore_text[::cfg.METASCORE_INC]]
-
-    # Scraping user score
-    userscore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w user'))
-    userscore_strings = [i.get_text() for i in userscore_text]
-    userscores = []
-    for userscore in userscore_strings:
-        try:
-            score_float = float(userscore)
-            userscores.append(score_float)
-        except ValueError:
-            score_float = None
-            userscores.append(score_float)
-
-    # Scraping release dates
-    release_date_text = soup.find_all("div", class_="clamp-details")
-    release_dates = [datetime.strptime(i.find("span").get_text(), "%B %d, %Y") for i in release_date_text]
-
-    # Scraping album descriptions
-    descriptions_text = soup.find_all("div", class_="summary")
-    summaries = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END) for i in descriptions_text]
-
-    # Build initial dictionary with preliminary information (info you can find on the main chart page)
-    summary_dict = ({"Album": album_names,
-                     "Artist": artist_names,
-                     "Metascore": metascores,
-                     "User Score": userscores,
-                     "Release Date": release_dates,
-                     "Summary": summaries,
-                     "Link to Album Page": links})
-
-    # Update dictionary with results of individual album page scraping (see below)
-    summary_dict.update(scrape_album_page(links))
-
-    # Turn dictionary with all details into DataFrame (can be removed if pandas is forbidden)
-    top_albums = pd.DataFrame(summary_dict)
-
-    # Create csv file from DataFrame (for better organization)
-    top_albums.to_csv("top albums.csv")
-    logging.info(f"CSV file was created. Initial information added.")
-
-    return summary_dict
+    return soups
 
 
-def scrape_album_page(pages_url):
+def scrape_album_page(args, pages_url):
     """
     Receives each page url from main chart page and scrapes additional details from given url:
     * Link to artist page
@@ -145,105 +106,263 @@ def scrape_album_page(pages_url):
     * Link to user review page
     * Link to page with additional details and album credits
     * Link to Amazon purchase page
+    :param args: a Struct with all the input arguments of the py file
+    :param pages_url: a list with albums' url pages
+    :returns a dictionary with information from all the albums' url pages
     """
     logging.debug(f"scrape_album_page() started")
+
+    # According to the configuration, we create batch size
+    if args.batch > 0:
+        logging.debug(f"According to the configuration, we create batch size")
+        pages_url_batch = [pages_url[i:i + args.batch] for i in range(0, len(pages_url), args.batch)]
+    else:
+        logging.critical(f"Batch size is {args.batch} but it must be greater than 0. Exiting program.")
+        raise ValueError(f'Batch size is {args.batch} but it must be greater than 0')
 
     # Build the dictionary of details we're scraping from each individual album page
     album_details_dict = {}
 
     # iterate over urls found on main page
-    for url in pages_url:
+    current_progress = 0
+    for pages_url in pages_url_batch:
 
-        # Getting page html
-        soup = use_requests(url)
+        # Getting pages html
+        soup_list = use_grequests(pages_url)
 
-        # Scraping additional details and adding them to dictionary
-        # Scraping the link to the artist page
-        artist_link = cfg.SITE_ADDRESS + soup.find('div', class_='product_artist').a['href']
-        album_details_dict.setdefault('Link to Artist Page', []).append(artist_link)
+        # Prints Scraping Progress when the flag args.progress is true
+        if len(pages_url_batch) > 0 and args.progress:
+            total_progress = len(pages_url_batch) * args.batch
+            current_progress += len(pages_url)
+            print(f'Scraping Progress: {round(100 * current_progress / total_progress, 2)}%')
 
-        # Scraping the publisher name and link to the publisher's Metacritic page
-        publisher_html = soup.find('span', class_='data', itemprop='publisher')
-        publisher_name = publisher_html.a.span.text.strip()
-        publisher_link = cfg.SITE_ADDRESS + publisher_html.a['href'].lstrip("['").rstrip("']")
-        album_details_dict.setdefault('Publisher', []).append(publisher_name)
-        album_details_dict.setdefault('Link to Publisher Page', []).append(publisher_link)
+        count_batch_url = 0
+        for soup_num, soup in enumerate(soup_list):
 
-        # Scraping the link to the image of the album cover
-        album_details_dict.setdefault('Album Cover Image', []).append(
-            soup.find('img', class_='product_image large_image')['src'])
+            # Prints url list when the flag args.url is true
+            if args.url:
+                print(pages_url[count_batch_url])
+                count_batch_url += 1
 
-        # Scraping the genres listed on the album
-        genres = soup.find('li', class_='summary_detail product_genre')
-        genre_list = ' '.join([genre.text for genre in genres.findAll('span')]).lstrip("Genre(s): \n").split(' ')
-        album_details_dict.setdefault('Album Genres', []).append(genre_list)
+            # Scraping additional details and adding them to dictionary
+            # Scraping the link to the artist page
+            album_details_dict.setdefault('Link to Artist Page', []).append(
+                cfg.SITE_ADDRESS + soup.find('div', class_='product_artist').a['href'])
 
-        # Scraping number of critic reviews and the link to the critic review page
-        num_of_critic_reviews_html = soup.find('span', itemprop="reviewCount").text.strip()
-        try:
-            num_of_critic_reviews = int(num_of_critic_reviews_html)
-            album_details_dict.setdefault('No. of Critic Reviews', []).append(num_of_critic_reviews)
-        except AttributeError:
-            album_details_dict.setdefault('No. of Critic Reviews', []).append(None)
+            # Scraping the publisher name and link to the publisher's Metacritic page
+            publisher_html = soup.find('span', class_='data', itemprop='publisher')
+            album_details_dict.setdefault('Publisher', []).append(publisher_html.a.span.text.strip())
+            album_details_dict.setdefault('Link to Publisher Page', []).append(
+                cfg.SITE_ADDRESS + publisher_html.a['href'].lstrip("['").rstrip("']"))
 
-        # Scraping link to the critic review page
-        link_to_critic_reviews = cfg.SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"]
-        album_details_dict.setdefault('Link to Critic Reviews', []).append(link_to_critic_reviews)
+            # Scraping the link to the image of the album cover
+            album_details_dict.setdefault('Album Cover Image', []).append(
+                soup.find('img', class_='product_image large_image')['src'])
 
-        # Scraping number of user reviews
-        # If there is no number of user scores, add an empty cell
-        user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
-        try:
-            num_of_user_reviews = int(user_score_html.find('span', class_='count').a.text.rstrip(' Ratings'))
-            album_details_dict.setdefault('No. of User Reviews', []).append(num_of_user_reviews)
-        except AttributeError:
-            logging.warning(f"There was no number of user reviews found on {url}. Added an empty cell instead.")
-            album_details_dict.setdefault('No. of User Reviews', []).append(None)
+            # Scraping the genres listed on the album
+            genres = soup.find('li', class_='summary_detail product_genre')
+            if genres:
+                genres = [genre.text for genre in genres.findAll('span') if "Genre(s)" not in genre.text]
+                album_details_dict.setdefault('Album Genres', []).append(', '.join(genres))
+            else:
+                logging.warning(f"There is no genre define in the album's page{pages_url[soup_num]}")
+                album_details_dict.setdefault('Album Genres', []).append(None)
 
-        # Scraping link to the user review page
-        album_details_dict.setdefault('Link to User Reviews', []).append(
+            # Scraping number of critic reviews and the link to the critic review page
+            album_details_dict.setdefault('No. of Critic Reviews', []).append(
+                soup.find('span', itemprop="reviewCount").text.strip())
+            album_details_dict.setdefault('Link to Critic Reviews', []).append(
+                cfg.SITE_ADDRESS + soup.find('li', class_="nav nav_critic_reviews").span.span.a["href"])
+
+            # Scraping number of user reviews
+            # If there is no number of user scores, add an empty cell
+            try:
+                user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
+                album_details_dict.setdefault('No. of User Reviews', []).append(
+                    int(user_score_html.find('span', class_='count').a.text.rstrip(' Ratings')))
+            except AttributeError:
+                logging.warning(
+                    f"There was no number of user reviews found on {pages_url[soup_num]}. Added an empty cell instead.")
+                album_details_dict.setdefault('No. of User Reviews', []).append(None)
+
+            # Scraping link to the user review page
+            album_details_dict.setdefault('Link to User Reviews', []).append(
                 cfg.SITE_ADDRESS + soup.find('li', class_='nav nav_user_reviews').span.span.a["href"])
 
-        # Scraping the link to page with more album details and album credits
-        more_details_link = cfg.SITE_ADDRESS + soup.find('li', class_="nav nav_details last_nav").span.span.a["href"]
-        album_details_dict.setdefault('Link to More Details and Album Credits', []).append(more_details_link)
+            # Scraping the link to page with more album details and album credits
+            album_details_dict.setdefault('Link to More Details and Album Credits', []).append(
+                cfg.SITE_ADDRESS + soup.find('li', class_="nav nav_details last_nav").span.span.a["href"])
 
-        # Scraping the link to the Amazon page to buy the album
-        # If there is no Amazon link, add an empty cell
-        try:
-            buy_album_link = soup.find('td', class_="esite_img_wrapper").a["href"]
-            album_details_dict.setdefault('Amazon Link', []).append(buy_album_link)
-        except AttributeError:
-            logging.warning(f"There was no Amazon link found on {url}. Added an empty cell instead.")
-            album_details_dict.setdefault('Amazon Link', []).append(None)
+            # Scraping the link to the Amazon page to buy the album
+            # If there is no Amazon link, add an empty cell
+            buy_album_link = soup.find('td', class_="esite_img_wrapper")
+            if buy_album_link:
+                album_details_dict.setdefault('Amazon Link', []).append(buy_album_link.a["href"])
+            else:
+                logging.warning(
+                    f"There was no Amazon link found on {pages_url[soup_num]}. Added an empty cell instead.")
+                album_details_dict.setdefault('Amazon Link', []).append(None)
 
     return album_details_dict
 
-# TODO move to separate test file
-def use_requests_test():
-    # Tests that use_requests function properly catches an exception for bad links
-    # Should add a debug log to logfile when in debug mode
-    test_url = "https://www.metacritic.com/bad_link_for_testing"
-    try:
-        use_requests(test_url)
-    except ValueError:
-        logging.debug(f"test_use_requests(): Properly caught the exception for bad link: {test_url}")
 
-    # Test that use_requests function does not catch an exception for a good link
-    test_url = "https://www.metacritic.com/"
-    use_requests(test_url)
-    logging.debug(f"test_use_requests(): {test_url} was requested successfully")
+def scrape_chart_page(args, chart_url):
+    """
+    Take given url and scrape:
+    * Album name
+    * Artist name
+    * Album release date
+    * Metascore
+    * User score
+    * Link to individual album page
+    :param args: a Struct with all the input arguments of the py file
+    :param chart_url: a string of the chart url page
+    :returns a dictionary with information of albums from the chart's url page
+    """
+    logging.debug(f"scrape_chart_page() started")
+
+    # Test input validation
+    if args.max is not None and args.max <= 0:
+        logging.critical(f"args.max is {args.max} but it must be greater than 0. Exiting program.")
+        raise ValueError(f'args.max is {args.max} but it must be greater than 0')
+
+    # Getting chart html
+    soup = use_grequests([chart_url])[0]
+
+    #  Scraping album name
+    album_name_text = soup.find_all('a', class_='title')
+    album_names = [i.find("h3").get_text() for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
+
+    # Scraping artist name
+    artist_name_text = soup.find_all('div', class_='artist')
+    artist_names = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END) for n, i in enumerate(artist_name_text)
+                    if args.max is None or n < args.max]
+
+    # Scraping critic score (Metascore)
+    metascore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w large'))
+    if len(metascore_text) == len(artist_names) * 2:
+        metascore_text = metascore_text[::cfg.SCORE_INC]
+    metascores = [i.get_text() for n, i in enumerate(metascore_text) if args.max is None or n < args.max]
+
+    # Scraping user score
+    userscore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w user'))
+    if len(userscore_text) == len(artist_names) * 2:
+        userscore_text = userscore_text[::cfg.SCORE_INC]
+    userscore_strings = [i.get_text() for n, i in enumerate(userscore_text) if args.max is None or n < args.max]
+    userscores = []
+    for userscore in userscore_strings:
+        try:
+            score_float = float(userscore)
+            userscores.append(score_float)
+        except ValueError:
+            score_float = None
+            userscores.append(score_float)
+            logging.warning(f"User score was not found")
+
+    # Scraping release dates
+    release_date_text = soup.find_all("div", class_="clamp-details")
+    release_dates = [datetime.strptime(i.find("span").get_text(), "%B %d, %Y") for n, i in enumerate(release_date_text)
+                     if args.max is None or n < args.max]
+
+    # Scraping album descriptions
+    descriptions_text = soup.find_all("div", class_="summary")
+    summaries = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END) for n, i in enumerate(descriptions_text)
+                 if args.max is None or n < args.max]
+
+    # Scraping links to individual album pages (for use later)
+    links = [(cfg.SITE_ADDRESS + i["href"]) for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
+
+    # Build initial dictionary with preliminary information (info you can find on the main chart page)
+    return ({"Album": album_names,
+             "Artist": artist_names,
+             "Metascore": metascores,
+             "User Score": userscores,
+             "Release Date": release_dates,
+             "Summary": summaries,
+             "Link to Album Page": links})
+
+
+def scrape(args):
+    """
+    Takes given chart link and scrape relevant information of the albums
+    :param args: a Struct with all the input arguments of the py file
+    """
+    logging.debug(f"scrape() started")
+    # Create the chart url
+    chart_url = cfg.SITE_ADDRESS + cfg.SORT_BY[args.sort] + cfg.FILTER_BY[args.filter] + cfg.YEAR_RELEASE[args.year]
+    print(f'main url: {chart_url}')
+
+    # Scrape the chart page
+    albums_dict = scrape_chart_page(args, chart_url)
+
+    # Update dictionary with results of individual album page scraping
+    albums_dict.update(scrape_album_page(args, albums_dict["Link to Album Page"]))
+
+    # Turn dictionary with all details into DataFrame (can be removed if pandas is forbidden)
+    albums_df = pd.DataFrame(albums_dict)
+    print(albums_df)
+
+    # Create csv file from DataFrame (for better organization)
+    if args.save:
+        save_csv(args, albums_df)
+
+    # Adding data to Database
+    add_data_to_db.add_data(albums_df)
+
+    logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
+
+
+def parse_args(args_string_list):
+    """
+    parse_args() is parsing the py file input arguments into the struct args
+    :param args_string_list: a list of the input arguments of the py file
+    :return a Struct with all the input arguments of the py file
+    """
+    logging.debug(f"parse_args() started")
+
+    # Interface definition
+    parser = argparse.ArgumentParser(description="This program scrapes data from Metacritic's albums charts.\n"
+                                                 "It stores the data in relational database.\n"
+                                                 "It allows to filter the desire chart by criteria.",
+                                     formatter_class=RawTextHelpFormatter)
+    parser.add_argument('filter', type=str, help=f'Filter albums by {list(cfg.FILTER_BY.keys())}')
+    parser.add_argument('-y', '--year', type=str, default=max(cfg.YEAR_RELEASE.keys()),
+                        help=f'Albums year release: {min(cfg.YEAR_RELEASE.keys())} to {max(cfg.YEAR_RELEASE.keys())}')
+    parser.add_argument('-s', '--sort', type=str, default=list(cfg.SORT_BY.keys())[0],
+                        help=f'Sort albums by {list(cfg.SORT_BY.keys())}')
+    parser.add_argument('-b', '--batch', type=int, help='grequest batch size', default=1)
+    parser.add_argument('-m', '--max', type=int, help="Maximum number of albums to scrape")
+    parser.add_argument('-c', '--commits', type=int, default=1, help=f'Number of queries before committing')
+    parser.add_argument('-d', '--database', help=f'Update Database', action='store_true')
+    parser.add_argument('-S', '--save', help=f'Saves csv file with the data', action='store_true')
+    parser.add_argument('-a', '--all', help=f'Scrape all possible options', action='store_true')
+    parser.add_argument('-p', '--progress', help=f'Shows scraping progress', action='store_true')
+    parser.add_argument('-u', '--url', help=f'Shows scraped urls', action='store_true')
+
+    return parser.parse_args(args_string_list)
 
 
 def main():
     """
-    main() first calls test_use_requests to check that the page is being requested properly,
-    Then calls scrape() to scrape the desired page.
+    main() getting the input arguments of the py file and calling scrape() with them
+    main() also catches exceptions
     """
+    args = parse_args(sys.argv[1:])
+
+    # Run scrape() by user's criteria
     try:
-        use_requests_test()
-        add_data_to_db.add_data(scrape())
+        if not args.all:
+            scrape(args)
+        else:
+            for args.year in cfg.YEAR_RELEASE.keys():
+                for args.filter in cfg.FILTER_BY.keys():
+                    for args.sort in cfg.SORT_BY.keys():
+                        scrape(args)
     except ValueError as e:
+        print(e)
+    except AttributeError as e:
+        print(e)
+    except TypeError as e:
         print(e)
 
 
