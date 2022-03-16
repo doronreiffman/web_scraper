@@ -30,6 +30,9 @@ import argparse
 import os
 from argparse import RawTextHelpFormatter
 import sys
+import connection
+from datetime import datetime
+import add_data_to_db
 
 # Logging definition
 if cfg.LOGFILE_DEBUG:
@@ -163,7 +166,7 @@ def scrape_album_page(args, pages_url):
                 album_details_dict.setdefault('Album Genres', []).append(', '.join(genres))
             else:
                 logging.warning(f"There is no genre define in the album's page{pages_url[soup_num]}")
-                album_details_dict.setdefault('Album Genres', []).append('')
+                album_details_dict.setdefault('Album Genres', []).append(None)
 
             # Scraping number of critic reviews and the link to the critic review page
             album_details_dict.setdefault('No. of Critic Reviews', []).append(
@@ -176,11 +179,11 @@ def scrape_album_page(args, pages_url):
             try:
                 user_score_html = soup.find('div', class_="userscore_wrap feature_userscore")
                 album_details_dict.setdefault('No. of User Reviews', []).append(
-                    user_score_html.find('span', class_='count').a.text.rstrip(' Ratings'))
+                    int(user_score_html.find('span', class_='count').a.text.rstrip(' Ratings')))
             except AttributeError:
                 logging.warning(
                     f"There was no number of user reviews found on {pages_url[soup_num]}. Added an empty cell instead.")
-                album_details_dict.setdefault('No. of User Reviews', []).append('')
+                album_details_dict.setdefault('No. of User Reviews', []).append(None)
 
             # Scraping link to the user review page
             album_details_dict.setdefault('Link to User Reviews', []).append(
@@ -198,7 +201,7 @@ def scrape_album_page(args, pages_url):
             else:
                 logging.warning(
                     f"There was no Amazon link found on {pages_url[soup_num]}. Added an empty cell instead.")
-                album_details_dict.setdefault('Amazon Link', []).append('')
+                album_details_dict.setdefault('Amazon Link', []).append(None)
 
     return album_details_dict
 
@@ -245,11 +248,20 @@ def scrape_chart_page(args, chart_url):
     userscore_text = soup.find_all('div', class_=lambda value: value and value.startswith('metascore_w user'))
     if len(userscore_text) == len(artist_names) * 2:
         userscore_text = userscore_text[::cfg.SCORE_INC]
-    userscores = [i.get_text() for n, i in enumerate(userscore_text) if args.max is None or n < args.max]
+    userscore_strings = [i.get_text() for n, i in enumerate(userscore_text) if args.max is None or n < args.max]
+    userscores = []
+    for userscore in userscore_strings:
+        try:
+            score_float = float(userscore)
+            userscores.append(score_float)
+        except ValueError:
+            score_float = None
+            userscores.append(score_float)
+            logging.warning(f"User score was not found")
 
     # Scraping release dates
     release_date_text = soup.find_all("div", class_="clamp-details")
-    release_dates = [i.find("span").get_text() for n, i in enumerate(release_date_text)
+    release_dates = [datetime.strptime(i.find("span").get_text(), "%B %d, %Y") for n, i in enumerate(release_date_text)
                      if args.max is None or n < args.max]
 
     # Scraping album descriptions
@@ -293,6 +305,9 @@ def scrape(args):
     # Create csv file from DataFrame (for better organization)
     if args.save:
         save_csv(args, albums_df)
+
+    # Adding data to Database
+    add_data_to_db.add_data(albums_df)
 
     logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
