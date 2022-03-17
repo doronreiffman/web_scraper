@@ -17,7 +17,6 @@ def add_data(summary_dict):
         sql_find_first_id = "SELECT album_id from albums WHERE album_name = (%s) ORDER BY album_id DESC LIMIT 1"
         cursor.execute(sql_find_first_id, summary_dict['Album'][0])
         id_counter = cursor.fetchone()['album_id']
-        print(summary_dict['Album'][0], id_counter)
 
         sql_add_artists = "INSERT INTO artists (artist_name, artist_link) VALUES (%s, %s) " \
                           "ON DUPLICATE KEY UPDATE artist_name=artist_name"

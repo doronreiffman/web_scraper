@@ -33,6 +33,7 @@ import sys
 import connection
 from datetime import datetime
 import add_data_to_db
+import create_database
 
 # Logging definition
 if cfg.LOGFILE_DEBUG:
@@ -163,10 +164,11 @@ def scrape_album_page(args, pages_url):
             genres = soup.find('li', class_='summary_detail product_genre')
             if genres:
                 genres = [genre.text for genre in genres.findAll('span') if "Genre(s)" not in genre.text]
-                album_details_dict.setdefault('Album Genres', []).append(', '.join(genres))
+                album_details_dict.setdefault('Album Genres', []).append(genres)
+                # album_details_dict.setdefault('Album Genres', []).append(', '.join(genres))
             else:
                 logging.warning(f"There is no genre define in the album's page{pages_url[soup_num]}")
-                album_details_dict.setdefault('Album Genres', []).append(None)
+                album_details_dict.setdefault('Album Genres', []).append('')
 
             # Scraping number of critic reviews and the link to the critic review page
             album_details_dict.setdefault('No. of Critic Reviews', []).append(
@@ -183,7 +185,7 @@ def scrape_album_page(args, pages_url):
             except AttributeError:
                 logging.warning(
                     f"There was no number of user reviews found on {pages_url[soup_num]}. Added an empty cell instead.")
-                album_details_dict.setdefault('No. of User Reviews', []).append(None)
+                album_details_dict.setdefault('No. of User Reviews', []).append(0)
 
             # Scraping link to the user review page
             album_details_dict.setdefault('Link to User Reviews', []).append(
@@ -201,7 +203,7 @@ def scrape_album_page(args, pages_url):
             else:
                 logging.warning(
                     f"There was no Amazon link found on {pages_url[soup_num]}. Added an empty cell instead.")
-                album_details_dict.setdefault('Amazon Link', []).append(None)
+                album_details_dict.setdefault('Amazon Link', []).append('')
 
     return album_details_dict
 
@@ -255,7 +257,7 @@ def scrape_chart_page(args, chart_url):
             score_float = float(userscore)
             userscores.append(score_float)
         except ValueError:
-            score_float = None
+            score_float = 0.0
             userscores.append(score_float)
             logging.warning(f"User score was not found")
 
@@ -361,3 +363,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# TODO: fix username/password issue
+# TODO: add init database option
+# TODO: add constant run option
+# TODO: add separate album id, change albums to chart history
+# TODO: add column to chart history - source of scrape (add to summary_dict)
+# TODO: add rank on chart page (add to summary_dict)
+# TODO: update README
