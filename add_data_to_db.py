@@ -1,8 +1,8 @@
 import connection
 
 
-def add_data(summary_dict):
-    with connection.connect_to_db() as cursor:
+def add_data(summary_dict, login_info):
+    with connection.connect_to_db(login_info) as cursor:
         sql_use = "USE top_albums"
         cursor.execute(sql_use)
 

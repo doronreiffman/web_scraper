@@ -1,10 +1,10 @@
 import pymysql.cursors
 
 
-def create_top_albums_db():
+def create_top_albums_db(login_info):
     connection = pymysql.connect(host='localhost',
-                                 user='root',
-                                 password='Reiffman8',
+                                 user=login_info['username'],
+                                 password=login_info['password'],
                                  cursorclass=pymysql.cursors.DictCursor)
     with connection:
         with connection.cursor() as cursor:

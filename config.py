@@ -24,7 +24,6 @@ STRIP_BEG = "\n by "
 STRIP_END = "\n "
 
 # for tests
-
 TEST_PAGES = [
     'https://www.metacritic.com/music/my-beautiful-dark-twisted-fantasy/kanye-west',
     'https://www.metacritic.com/music/the-archandroid/janelle-monae',
