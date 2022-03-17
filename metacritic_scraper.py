@@ -34,6 +34,7 @@ import connection
 from datetime import datetime
 import add_data_to_db
 import create_database
+import json
 
 # Logging definition
 if cfg.LOGFILE_DEBUG:
@@ -290,10 +291,11 @@ def scrape_chart_page(args, chart_url):
              "Link to Album Page": links})
 
 
-def scrape(args):
+def scrape(args, login_info):
     """
     Takes given chart link and scrape relevant information of the albums
     :param args: a Struct with all the input arguments of the py file
+    :param login_info: a dictionary with the user's login information
     """
     logging.debug(f"scrape() started")
     # Create the chart url
@@ -315,7 +317,7 @@ def scrape(args):
         save_csv(args, albums_df)
 
     # Adding data to Database
-    add_data_to_db.add_data(albums_dict)
+    add_data_to_db.add_data(albums_df, login_info)
 
     logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
@@ -333,18 +335,26 @@ def parse_args(args_string_list):
                                                  "It stores the data in relational database.\n"
                                                  "It allows to filter the desire chart by criteria.",
                                      formatter_class=RawTextHelpFormatter)
-    parser.add_argument('filter', type=str, help=f'Filter albums by {list(cfg.FILTER_BY.keys())}')
-    parser.add_argument('-y', '--year', type=str, default=max(cfg.YEAR_RELEASE.keys()),
-                        help=f'Albums year release: {min(cfg.YEAR_RELEASE.keys())} to {max(cfg.YEAR_RELEASE.keys())}. '
-                             f'The default value is {max(cfg.YEAR_RELEASE.keys())}')
-    parser.add_argument('-s', '--sort', type=str, default=list(cfg.SORT_BY.keys())[0],
-                        help=f'Sort albums by {list(cfg.SORT_BY.keys())}. '
-                             f'The default value is {list(cfg.SORT_BY.keys())[0]}')
-    parser.add_argument('-b', '--batch', type=int, help='grequest batch size', default=1)
-    parser.add_argument('-m', '--max', type=int, help="Maximum number of albums to scrape")
-    parser.add_argument('-S', '--save', help=f'Saves csv file with the data', action='store_true')
-    parser.add_argument('-p', '--progress', help=f'Shows scraping progress', action='store_true')
-    parser.add_argument('-u', '--url', help=f'Shows scraped urls', action='store_true')
+
+    subparser = parser.add_subparsers(dest='command')
+
+    login = subparser.add_parser('login', help=f'Update login information. "login -h" for more information')
+    login.add_argument('--username', type=str, required=True)
+    login.add_argument('--password', type=str, required=True)
+
+    settings = subparser.add_parser('settings', help=f'Change Settings. "settings -h" for more information')
+    settings.add_argument('-i', '--init', help=f'Initiates the database', action='store_true')
+
+    update = subparser.add_parser('update', help=f'Update database. "update -h" for more information')
+    update.add_argument('-f', '--filter', type=str, required=True, help=f'Filter albums: {list(cfg.FILTER_BY.keys())}')
+    update.add_argument('-y', '--year', type=str, required=True,
+                        help=f'Albums year release: {min(cfg.YEAR_RELEASE.keys())} to {max(cfg.YEAR_RELEASE.keys())}')
+    update.add_argument('-s', '--sort', type=str, required=True, help=f'Sort albums: {list(cfg.SORT_BY.keys())}')
+    update.add_argument('-b', '--batch', type=int, help='grequest batch size', default=1)
+    update.add_argument('-m', '--max', type=int, help="Maximum number of albums to scrape")
+    update.add_argument('-p', '--progress', help=f'Shows scraping progress', action='store_true')
+    update.add_argument('-u', '--url', help=f'Shows scraped urls', action='store_true')
+    update.add_argument('-S', '--save', help=f'Saves csv file with the data', action='store_true')
 
     return parser.parse_args(args_string_list)
 
@@ -354,25 +364,48 @@ def main():
     main() getting the input arguments of the py file and calling scrape() with them
     main() also catches exceptions
     """
+    # Get user arguments
     args = parse_args(sys.argv[1:])
 
+    # Read login information from login.json
+    with open("login.json", "r") as openfile:
+        login_info = json.load(openfile)
+
+    # Update user login information
+    if args.command == 'login':
+        if args.username:
+            with open("login.json", "w") as outfile:
+                login_info['username'] = args.username
+                json.dump(login_info, outfile)
+
+        # Update password login information
+        if args.password:
+            with open("login.json", "w") as outfile:
+                login_info['password'] = args.password
+                json.dump(login_info, outfile)
+        return
+
     # Run scrape() by user's criteria
-    try:
-        scrape(args)
-    except ValueError as e:
-        print(e)
-    except AttributeError as e:
-        print(e)
-    except TypeError as e:
-        print(e)
+    if args.command == 'update':
+        try:
+            scrape(args, login_info)
+        except ValueError as e:
+            print(e)
+        except AttributeError as e:
+            print(e)
+        except TypeError as e:
+            print(e)
+        return
+
+    if args.command == 'settings':
+        if args.init:
+            create_database.create_top_albums_db(login_info)
 
 
 if __name__ == '__main__':
     main()
 
-# TODO: fix username/password issue
-# TODO: add init database option
-# TODO: add constant run option
+# TODO: add separate album id, change albums to chart history
 # TODO: add column to chart history - source of scrape (add to summary_dict)
 # TODO: add rank on chart page (add to summary_dict)
 # TODO: update README
