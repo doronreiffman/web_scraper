@@ -235,6 +235,11 @@ def scrape_chart_page(args, chart_url):
     album_name_text = soup.find_all('a', class_='title')
     album_names = [i.find("h3").get_text() for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
 
+    # Scraping ranks
+    ranks_text = soup.find_all('span', class_='title numbered')
+    ranks = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END).rstrip('.') for n, i in enumerate(ranks_text)
+             if args.max is None or n < args.max]
+
     # Scraping artist name
     artist_name_text = soup.find_all('div', class_='artist')
     artist_names = [i.get_text().lstrip(cfg.STRIP_BEG).rstrip(cfg.STRIP_END) for n, i in enumerate(artist_name_text)
@@ -276,6 +281,7 @@ def scrape_chart_page(args, chart_url):
 
     # Build initial dictionary with preliminary information (info you can find on the main chart page)
     return ({"Album": album_names,
+             "Album Rank": ranks,
              "Artist": artist_names,
              "Metascore": metascores,
              "User Score": userscores,
@@ -367,7 +373,6 @@ if __name__ == '__main__':
 # TODO: fix username/password issue
 # TODO: add init database option
 # TODO: add constant run option
-# TODO: add separate album id, change albums to chart history
 # TODO: add column to chart history - source of scrape (add to summary_dict)
 # TODO: add rank on chart page (add to summary_dict)
 # TODO: update README

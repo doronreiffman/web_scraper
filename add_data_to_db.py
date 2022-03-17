@@ -6,13 +6,14 @@ def add_data(summary_dict):
         sql_use = "USE top_albums"
         cursor.execute(sql_use)
 
-        sql_add_history = "INSERT INTO chart_history (scrape_datetime, metascore, user_score, num_of_critic_reviews, \
-                          num_of_user_reviews) VALUES (NOW(), %s, %s, %s, %s)"
+        sql_add_history = "INSERT INTO chart_history (scrape_datetime, album_rank, metascore, user_score, num_of_critic_reviews, \
+                          num_of_user_reviews) VALUES (NOW(), %s, %s, %s, %s, %s)"
         counter = 0
-        for metascore, userscore, num_of_critic_reviews, num_of_user_reviews \
-                in zip(summary_dict['Metascore'], summary_dict['User Score'], summary_dict['No. of Critic Reviews'],
-                       summary_dict['No. of User Reviews']):
-            cursor.execute(sql_add_history, (metascore, userscore, num_of_critic_reviews, num_of_user_reviews))
+        for album_rank, metascore, userscore, num_of_critic_reviews, num_of_user_reviews \
+                in zip(summary_dict['Album Rank'], summary_dict['Metascore'], summary_dict['User Score'],
+                       summary_dict['No. of Critic Reviews'], summary_dict['No. of User Reviews']):
+            cursor.execute(sql_add_history, (album_rank, metascore, userscore,
+                                             num_of_critic_reviews, num_of_user_reviews))
             if counter == 0:
                 id_counter = cursor.lastrowid
                 counter += 1

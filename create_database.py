@@ -19,6 +19,7 @@ def create_top_albums_db():
                                       scrape_id int PRIMARY KEY AUTO_INCREMENT,  \
                                       scrape_datetime datetime,\
                                       album_id int,\
+                                      album_rank int,\
                                       artist_id int,\
                                       publisher_id int,\
                                       metascore int,\
