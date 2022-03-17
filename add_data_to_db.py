@@ -126,27 +126,3 @@ def add_data(summary_dict, filter_by_arg, year_arg, sort_by_arg):
 
         cursor.execute("COMMIT")
 
-        # critic_review_increment_count = id_counter
-        # sql_add_critic_reviews_to_albums = "UPDATE albums SET num_of_critic_reviews = (%s) WHERE album_id = (%s)"
-        # for num_of_critic_reviews in summary_dict['No. of Critic Reviews']:
-        #     cursor.execute(sql_add_critic_reviews_to_albums, (num_of_critic_reviews, critic_review_increment_count))
-        #     critic_review_increment_count += 1
-        #
-        # user_review_increment_count = id_counter
-        # sql_add_user_reviews_to_albums = "UPDATE albums SET num_of_user_reviews = (%s) WHERE album_id = (%s)"
-        # for num_of_user_reviews in summary_dict['No. of User Reviews']:
-        #     cursor.execute(sql_add_user_reviews_to_albums, (num_of_user_reviews, user_review_increment_count))
-        #     user_review_increment_count += 1
-
-        # detail_link_increment_count = id_counter
-        # sql_add_detail_link_to_albums = "UPDATE albums SET details_and_credits_link = (%s) WHERE album_id = (%s)"
-        # for more_details_link in summary_dict['Link to More Details and Album Credits']:
-        #     cursor.execute(sql_add_detail_link_to_albums, (more_details_link, detail_link_increment_count))
-        #     detail_link_increment_count += 1
-        #
-        # amazon_link_increment_count = id_counter
-        # sql_add_amazon_link_to_albums = "UPDATE albums SET amazon_link = (%s) WHERE album_id = (%s)"
-        # for buy_album_link in summary_dict['Amazon Link']:
-        #     cursor.execute(sql_add_amazon_link_to_albums, (buy_album_link, amazon_link_increment_count))
-        #     amazon_link_increment_count += 1
-
