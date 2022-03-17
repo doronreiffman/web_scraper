@@ -39,7 +39,6 @@ def create_top_albums_db(login_info):
                                       album_id int PRIMARY KEY AUTO_INCREMENT, \
                                       album_name varchar(255) UNIQUE, \
                                       album_link varchar(255), \
-                                      summary_id int,\
                                       details_and_credits_link varchar(255),\
                                       amazon_link TEXT,\
                                       release_date datetime\
