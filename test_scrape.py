@@ -1,4 +1,4 @@
-import scrape
+import metacritic_scraper as scrape
 import pytest
 import pandas as pd
 import config as cfg
@@ -145,7 +145,7 @@ def test_scrape_album_page_empty_pages_url():
     args = scrape.parse_args(['year'])
     pages_url = []
 
-    list(scrape.scrape_album_page(args, pages_url).keys()) == []
+    assert list(scrape.scrape_album_page(args, pages_url).keys()) == []
 
 
 def test_scrape_album_page_creates_dictionary():

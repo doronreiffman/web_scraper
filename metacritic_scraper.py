@@ -327,15 +327,14 @@ def parse_args(args_string_list):
                                      formatter_class=RawTextHelpFormatter)
     parser.add_argument('filter', type=str, help=f'Filter albums by {list(cfg.FILTER_BY.keys())}')
     parser.add_argument('-y', '--year', type=str, default=max(cfg.YEAR_RELEASE.keys()),
-                        help=f'Albums year release: {min(cfg.YEAR_RELEASE.keys())} to {max(cfg.YEAR_RELEASE.keys())}')
+                        help=f'Albums year release: {min(cfg.YEAR_RELEASE.keys())} to {max(cfg.YEAR_RELEASE.keys())}. '
+                             f'The default value is {max(cfg.YEAR_RELEASE.keys())}')
     parser.add_argument('-s', '--sort', type=str, default=list(cfg.SORT_BY.keys())[0],
-                        help=f'Sort albums by {list(cfg.SORT_BY.keys())}')
+                        help=f'Sort albums by {list(cfg.SORT_BY.keys())}. '
+                             f'The default value is {list(cfg.SORT_BY.keys())[0]}')
     parser.add_argument('-b', '--batch', type=int, help='grequest batch size', default=1)
     parser.add_argument('-m', '--max', type=int, help="Maximum number of albums to scrape")
-    parser.add_argument('-c', '--commits', type=int, default=1, help=f'Number of queries before committing')
-    parser.add_argument('-d', '--database', help=f'Update Database', action='store_true')
     parser.add_argument('-S', '--save', help=f'Saves csv file with the data', action='store_true')
-    parser.add_argument('-a', '--all', help=f'Scrape all possible options', action='store_true')
     parser.add_argument('-p', '--progress', help=f'Shows scraping progress', action='store_true')
     parser.add_argument('-u', '--url', help=f'Shows scraped urls', action='store_true')
 
@@ -351,13 +350,7 @@ def main():
 
     # Run scrape() by user's criteria
     try:
-        if not args.all:
-            scrape(args)
-        else:
-            for args.year in cfg.YEAR_RELEASE.keys():
-                for args.filter in cfg.FILTER_BY.keys():
-                    for args.sort in cfg.SORT_BY.keys():
-                        scrape(args)
+        scrape(args)
     except ValueError as e:
         print(e)
     except AttributeError as e:
