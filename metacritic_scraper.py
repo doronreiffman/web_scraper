@@ -315,7 +315,7 @@ def scrape(args):
         save_csv(args, albums_df)
 
     # Adding data to Database
-    add_data_to_db.add_data(albums_dict)
+    add_data_to_db.add_data(albums_dict, args.filter, args.year, args.sort)
 
     logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
@@ -374,5 +374,4 @@ if __name__ == '__main__':
 # TODO: add init database option
 # TODO: add constant run option
 # TODO: add column to chart history - source of scrape (add to summary_dict)
-# TODO: add rank on chart page (add to summary_dict)
 # TODO: update README

@@ -1,7 +1,7 @@
 import connection
 
 
-def add_data(summary_dict):
+def add_data(summary_dict, filter_by_arg, year_arg, sort_by_arg):
     with connection.connect_to_db() as cursor:
         sql_use = "USE top_albums"
         cursor.execute(sql_use)
@@ -19,6 +19,23 @@ def add_data(summary_dict):
                 counter += 1
 
         cursor.execute("COMMIT")
+
+        sql_find_chart_id = "SELECT chart_id FROM charts WHERE filter_by = (%s) AND year = (%s) AND sort_by = (%s)"
+        cursor.execute(sql_find_chart_id, (filter_by_arg, year_arg, sort_by_arg))
+        correct_chard_id = cursor.fetchone()['chart_id']
+        sql_add_charts = "INSERT INTO charts (filter_by, year, sort_by) VALUES (%s, %s, %s)"
+        sql_add_chart_id_to_history = "UPDATE chart_history SET chart_id = (%s) WHERE scrape_id = (%s)"
+        chart_increment_count = id_counter
+        if not correct_chard_id:
+            cursor.execute(sql_add_charts, (filter_by_arg, year_arg, sort_by_arg))
+            last_chart_id = cursor.lastrowid
+            for scrape in summary_dict['Album']:
+                cursor.execute(sql_add_chart_id_to_history, (last_chart_id, chart_increment_count))
+                chart_increment_count += 1
+        else:
+            for scrape in summary_dict['Album']:
+                cursor.execute(sql_add_chart_id_to_history, (correct_chard_id, chart_increment_count))
+                chart_increment_count += 1
 
         sql_add_albums = "INSERT INTO albums (album_name, album_link, details_and_credits_link, amazon_link, " \
                          "release_date) " \
@@ -121,16 +138,15 @@ def add_data(summary_dict):
         #     cursor.execute(sql_add_user_reviews_to_albums, (num_of_user_reviews, user_review_increment_count))
         #     user_review_increment_count += 1
 
-        detail_link_increment_count = id_counter
-        sql_add_detail_link_to_albums = "UPDATE albums SET details_and_credits_link = (%s) WHERE album_id = (%s)"
-        for more_details_link in summary_dict['Link to More Details and Album Credits']:
-            cursor.execute(sql_add_detail_link_to_albums, (more_details_link, detail_link_increment_count))
-            detail_link_increment_count += 1
+        # detail_link_increment_count = id_counter
+        # sql_add_detail_link_to_albums = "UPDATE albums SET details_and_credits_link = (%s) WHERE album_id = (%s)"
+        # for more_details_link in summary_dict['Link to More Details and Album Credits']:
+        #     cursor.execute(sql_add_detail_link_to_albums, (more_details_link, detail_link_increment_count))
+        #     detail_link_increment_count += 1
+        #
+        # amazon_link_increment_count = id_counter
+        # sql_add_amazon_link_to_albums = "UPDATE albums SET amazon_link = (%s) WHERE album_id = (%s)"
+        # for buy_album_link in summary_dict['Amazon Link']:
+        #     cursor.execute(sql_add_amazon_link_to_albums, (buy_album_link, amazon_link_increment_count))
+        #     amazon_link_increment_count += 1
 
-        amazon_link_increment_count = id_counter
-        sql_add_amazon_link_to_albums = "UPDATE albums SET amazon_link = (%s) WHERE album_id = (%s)"
-        for buy_album_link in summary_dict['Amazon Link']:
-            cursor.execute(sql_add_amazon_link_to_albums, (buy_album_link, amazon_link_increment_count))
-            amazon_link_increment_count += 1
-
-        cursor.execute("COMMIT")
