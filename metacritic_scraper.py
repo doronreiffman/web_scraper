@@ -309,7 +309,7 @@ def scrape(args):
         save_csv(args, albums_df)
 
     # Adding data to Database
-    add_data_to_db.add_data(albums_df)
+    add_data_to_db.add_data(albums_dict)
 
     logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
