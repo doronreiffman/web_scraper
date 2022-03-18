@@ -18,6 +18,7 @@ def create_top_albums_db(login_info):
             sql_create_table_history = "CREATE TABLE chart_history (\
                                       scrape_id int PRIMARY KEY AUTO_INCREMENT,  \
                                       scrape_datetime datetime,\
+                                      chart_id int,\
                                       album_id int,\
                                       album_rank int,\
                                       artist_id int,\
@@ -27,6 +28,12 @@ def create_top_albums_db(login_info):
                                       num_of_critic_reviews int,\
                                       num_of_user_reviews int,\
                                       summary_id int\
+                                      )"
+            sql_create_table_charts = "CREATE TABLE charts (\
+                                      chart_id int PRIMARY KEY AUTO_INCREMENT, \
+                                      filter_by varchar(255), \
+                                      year int, \
+                                      sort_by varchar(255)\
                                       )"
             sql_create_table_albums = "CREATE TABLE albums (\
                                       album_id int PRIMARY KEY AUTO_INCREMENT, \
@@ -61,6 +68,7 @@ def create_top_albums_db(login_info):
                                           )"
 
             cursor.execute(sql_create_table_history)
+            cursor.execute(sql_create_table_charts)
             cursor.execute(sql_create_table_albums)
             cursor.execute(sql_create_table_genres)
             cursor.execute(sql_create_table_albums_to_genres)
@@ -88,12 +96,17 @@ def create_top_albums_db(login_info):
             foreign_key6 = "ALTER TABLE chart_history\
                                     ADD FOREIGN KEY (summary_id)\
                                     REFERENCES summaries (summary_id)"
+            foreign_key7 = "ALTER TABLE chart_history\
+                                    ADD FOREIGN KEY (chart_id)\
+                                    REFERENCES charts (chart_id)"
+
             cursor.execute(foreign_key1)
             cursor.execute(foreign_key2)
             cursor.execute(foreign_key3)
             cursor.execute(foreign_key4)
             cursor.execute(foreign_key5)
             cursor.execute(foreign_key6)
+            cursor.execute(foreign_key7)
             cursor.execute("COMMIT")
 
 

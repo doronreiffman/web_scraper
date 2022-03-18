@@ -141,27 +141,27 @@ def scrape():
 
         cursor.execute(sql_commit)
 
-        foreign_key1 = "ALTER TABLE albums_to_genres\
-                                ADD FOREIGN KEY (album_id)\
-                                REFERENCES albums (album_id)"
-        foreign_key2 = "ALTER TABLE albums_to_genres\
-                                ADD FOREIGN KEY (genre_id)\
-                                REFERENCES genres (genre_id)"
-        foreign_key3 = "ALTER TABLE albums\
-                                ADD FOREIGN KEY (artist_id)\
-                                REFERENCES artists (artist_id)"
-        foreign_key4 = "ALTER TABLE albums\
-                                ADD FOREIGN KEY (publisher_id)\
-                                REFERENCES publishers (publisher_id)"
-        foreign_key5 = "ALTER TABLE albums\
-                                ADD FOREIGN KEY (summary_id)\
-                                REFERENCES summaries (summary_id)"
-        cursor.execute(foreign_key1)
-        cursor.execute(foreign_key2)
-        cursor.execute(foreign_key3)
-        cursor.execute(foreign_key4)
-        cursor.execute(foreign_key5)
-        cursor.execute(sql_commit)
+        # foreign_key1 = "ALTER TABLE albums_to_genres\
+        #                         ADD FOREIGN KEY (album_id)\
+        #                         REFERENCES albums (album_id)"
+        # foreign_key2 = "ALTER TABLE albums_to_genres\
+        #                         ADD FOREIGN KEY (genre_id)\
+        #                         REFERENCES genres (genre_id)"
+        # foreign_key3 = "ALTER TABLE albums\
+        #                         ADD FOREIGN KEY (artist_id)\
+        #                         REFERENCES artists (artist_id)"
+        # foreign_key4 = "ALTER TABLE albums\
+        #                         ADD FOREIGN KEY (publisher_id)\
+        #                         REFERENCES publishers (publisher_id)"
+        # foreign_key5 = "ALTER TABLE albums\
+        #                         ADD FOREIGN KEY (summary_id)\
+        #                         REFERENCES summaries (summary_id)"
+        # cursor.execute(foreign_key1)
+        # cursor.execute(foreign_key2)
+        # cursor.execute(foreign_key3)
+        # cursor.execute(foreign_key4)
+        # cursor.execute(foreign_key5)
+        # cursor.execute(sql_commit)
 
 
     # Build initial dictionary with preliminary information (info you can find on the main chart page)
