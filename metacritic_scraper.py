@@ -30,11 +30,9 @@ import argparse
 import os
 from argparse import RawTextHelpFormatter
 import sys
-import connection
 from datetime import datetime
-import add_data_to_db
-import create_database
 import json
+import top_albums_db as ta
 
 # Logging definition
 if cfg.LOGFILE_DEBUG:
@@ -317,7 +315,7 @@ def scrape(args, login_info):
         save_csv(args, albums_df)
 
     # Adding data to Database
-    add_data_to_db.add_data(albums_dict, login_info, args.filter, args.year, args.sort)
+    ta.add_data(albums_dict, login_info, args.filter, args.year, args.sort)
 
     logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
@@ -399,7 +397,7 @@ def main():
 
     if args.command == 'settings':
         if args.init:
-            create_database.create_top_albums_db(login_info)
+            ta.create_top_albums_db(login_info)
 
 
 if __name__ == '__main__':

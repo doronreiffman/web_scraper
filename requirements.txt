@@ -13,3 +13,4 @@ urllib3==1.26.8
 
 grequests~=0.6.0
 pytest~=7.1.0
+PyMySQL~=1.0.2

@@ -24,6 +24,9 @@ STRIP_BEG = "\n by "
 STRIP_END = "\n "
 
 # for tests
+
+ARGS_4_TESTS = ['update', '-f', 'year', '-y', '2022', '-s', 'meta_score']
+
 TEST_PAGES = [
     'https://www.metacritic.com/music/my-beautiful-dark-twisted-fantasy/kanye-west',
     'https://www.metacritic.com/music/the-archandroid/janelle-monae',
@@ -56,4 +59,5 @@ ALBUM_PAGE_COLUMNS = ['Link to Artist Page', 'Publisher', 'Link to Publisher Pag
                       'No. of Critic Reviews', 'Link to Critic Reviews', 'No. of User Reviews', 'Link to User Reviews',
                       'Link to More Details and Album Credits', 'Amazon Link']
 
-CHART_PAGE_COLUMNS = ['Album', 'Artist', 'Metascore', 'User Score', 'Release Date', 'Summary', 'Link to Album Page']
+CHART_PAGE_COLUMNS = ['Album', 'Album Rank', 'Artist', 'Metascore',
+                      'User Score', 'Release Date', 'Summary', 'Link to Album Page']
