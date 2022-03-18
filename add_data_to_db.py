@@ -1,7 +1,5 @@
 import connection
 
-
-
 def add_data(summary_dict, login_info, filter_by_arg, year_arg, sort_by_arg):
     with connection.connect_to_db(login_info) as cursor:
         sql_use = "USE top_albums"
