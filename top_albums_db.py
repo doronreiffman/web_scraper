@@ -1,5 +1,4 @@
 import pymysql.cursors
-import connection
 
 
 def connect_to_db(login_info):
@@ -275,7 +274,7 @@ def update_genres_table(cursor, id_counter, summary_dict):
 
 def add_data(summary_dict, login_info, filter_by_arg, year_arg, sort_by_arg):
     # Connect host
-    with connection.connect_to_db(login_info) as cursor:
+    with connect_to_db(login_info) as cursor:
         # Use top_albums database
         sql_use = "USE top_albums"
         cursor.execute(sql_use)
