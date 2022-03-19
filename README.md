@@ -187,7 +187,7 @@ options:
   * summary: summary text
   
 * **albums_to_genres**: saves information about album genres; functions as intermediate table for
-* many-to-many relationship between albums and genres
+many-to-many relationship between albums and genres
   * album_id: references albums table
   * genre_id: references genres table
 
