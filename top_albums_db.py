@@ -273,36 +273,42 @@ def update_genres_table(cursor, id_counter, summary_dict):
 
 
 def add_data(summary_dict, login_info, filter_by_arg, year_arg, sort_by_arg):
+    """
+    TODO: docstring
+    :param summary_dict:
+    :param login_info:
+    :param filter_by_arg:
+    :param year_arg:
+    :param sort_by_arg:
+    :return:
+    """
+
     # Connect host
     with connect_to_db(login_info) as cursor:
+
         # Use top_albums database
         sql_use = "USE top_albums"
         cursor.execute(sql_use)
-        # cursor.execute("COMMIT")
+        cursor.execute("COMMIT")
 
         # Update chart_history table
         cursor, id_counter = update_chart_history_table(cursor, summary_dict)
-        # cursor.execute("COMMIT")
+        cursor.execute("COMMIT")
 
         # Update charts table
         cursor = update_charts_table(cursor, id_counter, summary_dict, filter_by_arg, year_arg, sort_by_arg)
-        # cursor.execute("COMMIT")
 
         # Update albums table
         cursor = update_albums_table(cursor, id_counter, summary_dict)
-        # cursor.execute("COMMIT")
 
         # Update artists table
         cursor = update_artists_table(cursor, id_counter, summary_dict)
-        # cursor.execute("COMMIT")
 
         # Update summaries table
         cursor = update_summaries_table(cursor, id_counter, summary_dict)
-        # cursor.execute("COMMIT")
 
         # Update publishers table
         cursor = update_publishers_table(cursor, id_counter, summary_dict)
-        # cursor.execute("COMMIT")
 
         # Update genres table
         cursor = update_genres_table(cursor, id_counter, summary_dict)
