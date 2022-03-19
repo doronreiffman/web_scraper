@@ -29,25 +29,25 @@ This program will take any Metacritic music album chart and scrape it for releva
 
 ## Steps: 
 
-###Clone the project
+### Clone the project
 
 ```bash
   git clone https://github.com/doronreiffman/web_scraper
 ```
 
-###Go to the project directory
+### Go to the project directory
 
 ```bash
   cd web_scraper
 ```
 
-###Install dependencies
+### Install dependencies
 
 ```bash
   pip install -r requirements.txt
 ```
 
-###Save MySQL login information
+### Save MySQL login information
 
 
 ```bash
@@ -55,13 +55,13 @@ This program will take any Metacritic music album chart and scrape it for releva
 ```
 * **Note: The login information is saved in login.json file**
 
-###Create top_albums database
+### Create top_albums database
 
 ```bash
   python ./metacritic_scraper.py settings -i
 ```
 
-###Update top_albums database
+### Update top_albums database
 
 1. Example of updating the database with the top albums in 2013 by meta_score (with long and short notation):
 * **Note: These arguments are required:  --filter,  --year,  --sort**
