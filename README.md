@@ -131,7 +131,7 @@ options:
 ```
 ## ERD
 
-![Output in Pycharm](https://user-images.githubusercontent.com/100131903/159134969-624aab99-3c38-4357-8aec-8d2f8c221e39.jpg
+![Output in Pycharm](https://github.com/doronreiffman/doronreiffman.github.io/blob/main/WhatsApp%20Image%202022-03-23%20at%207.48.38%20PM.jpeg
 )
 
 ## Tables and Explanations
