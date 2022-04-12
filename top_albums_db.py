@@ -169,7 +169,7 @@ def update_charts_table(cursor, filter_by_arg, year_arg, sort_by_arg):
     # Insert if not exists
     if chart_id is None:
         # sql command to add a record into the charts table
-        sql = "INSERT INTO charts (filter_by, year, sort_by) VALUES (%s), (%s), (%s)"
+        sql = "INSERT INTO charts (filter_by, year, sort_by) VALUES (%s, %s, %s)"
         cursor.execute(sql, (filter_by_arg, year_arg, sort_by_arg))
         chart_id = cursor.lastrowid
     else:

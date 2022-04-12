@@ -322,6 +322,7 @@ def scrape(args, login_info):
 
     # Update dictionary with results of individual album page scraping
     albums_dict.update(scrape_album_page(args, albums_dict["Link to Album Page"]))
+    logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
     # Turn dictionary with all details into DataFrame (can be removed if pandas is forbidden)
     albums_df = pd.DataFrame(albums_dict)
@@ -332,9 +333,8 @@ def scrape(args, login_info):
         save_csv(args, albums_df)
 
     # Adding data to Database
-    ta.add_data(albums_dict, login_info, args.filter, args.year, args.sort)
+    ta.add_data(albums_df, login_info, args.filter, args.year, args.sort)
 
-    logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
 
 def parse_args(args_string_list):
