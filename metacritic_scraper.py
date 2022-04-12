@@ -302,8 +302,8 @@ def scrape_chart_page(args, chart_url):
              "Release Date": release_dates,
              "Summary": summaries,
              "Link to Album Page": links,
-             "Artist Popularity": artist_popularity,
-             "Number of Followers": followers_num})
+             "Spotify Artist Popularity": artist_popularity,
+             "Number of Spotify Followers": followers_num})
 
 
 def scrape(args, login_info):
