@@ -33,6 +33,7 @@ import sys
 from datetime import datetime
 import json
 import top_albums_db as ta
+import api_spotify as api
 
 # Logging definition
 if cfg.LOGFILE_DEBUG:
@@ -41,6 +42,10 @@ if cfg.LOGFILE_DEBUG:
 else:
     logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s",
                         level=logging.INFO)
+
+# TODO: add to separate file?
+client_id = 'fb71510e7a1e42b3b9f23045abba5d39'
+client_secret = '271c34473cfc42b993bde54c906b3c41'
 
 
 def save_csv(args, albums_df):
@@ -278,6 +283,14 @@ def scrape_chart_page(args, chart_url):
     # Scraping links to individual album pages (for use later)
     links = [(cfg.SITE_ADDRESS + i["href"]) for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
 
+    # call spotify api for artist popularity
+    artist_popularity = [api.spotify_search(artist_name, 'artist', 'popularity')['artists']['items'][0]['popularity']
+                         for artist_name in artist_names]
+
+    # call spotify api for number of followers for artist
+    followers_num = [api.spotify_search(artist_name, 'artist', 'number of followers')
+                     ['artists']['items'][0]['followers']['total'] for artist_name in artist_names]
+
     # Build initial dictionary with preliminary information (info you can find on the main chart page)
     return ({"Album": album_names,
              "Album Rank": ranks,
@@ -286,7 +299,9 @@ def scrape_chart_page(args, chart_url):
              "User Score": userscores,
              "Release Date": release_dates,
              "Summary": summaries,
-             "Link to Album Page": links})
+             "Link to Album Page": links,
+             "Spotify Artist Popularity": artist_popularity,
+             "Number of Spotify Followers": followers_num})
 
 
 def scrape(args, login_info):
@@ -317,8 +332,6 @@ def scrape(args, login_info):
 
     # Adding data to Database
     ta.add_data(albums_df, login_info, args.filter, args.year, args.sort)
-
-
 
 
 def parse_args(args_string_list):

@@ -79,7 +79,11 @@ def create_top_albums_db(login_info):
         sql_create_tables.update({"artists": "CREATE TABLE IF NOT EXISTS artists (\
                                     artist_id int PRIMARY KEY AUTO_INCREMENT,\
                                     artist_name varchar(255) UNIQUE,\
-                                    artist_link varchar(255));"})
+                                    artist_link varchar(255),\
+                                    popularity INT,\
+                                    followers_num INT\
+                                    );"})
+
 
         # Creates publishers table - contains information about publishers (including name and link)
         sql_create_tables.update({"publishers": "CREATE TABLE IF NOT EXISTS publishers (\
@@ -137,7 +141,6 @@ def create_top_albums_db(login_info):
                                   );"})
 
         try:
-
             for table in sql_create_tables.keys():
                 cursor.execute(sql_create_tables[table])
             cursor.execute("COMMIT")
@@ -167,7 +170,7 @@ def update_charts_table(cursor, filter_by_arg, year_arg, sort_by_arg):
     # Insert if not exists
     if chart_id is None:
         # sql command to add a record into the charts table
-        sql = """ INSERT INTO charts (filter_by, year, sort_by) VALUES ((%s), (%s), (%s))"""
+        sql = "INSERT INTO charts (filter_by, year, sort_by) VALUES (%s, %s, %s)"
         cursor.execute(sql, (filter_by_arg, year_arg, sort_by_arg))
         chart_id = cursor.lastrowid
     else:
@@ -228,8 +231,9 @@ def update_artists_table(cursor, row):
     # Insert if not exists
     if artist_id is None:
         # sql command to add a record into artists table with name and link to Metacritic artist page
-        query = "INSERT INTO artists (artist_name, artist_link) VALUES (%s, %s)"
-        cursor.execute(query, (row['Artist'], row['Link to Artist Page']))
+        query = "INSERT INTO artists (artist_name, artist_link, popularity, followers_num) VALUES (%s, %s, %s, %s)"
+        cursor.execute(query, (row['Artist'], row['Link to Artist Page'],
+                               row['Spotify Artist Popularity'], row['Number of Spotify Followers']))
         artist_id = cursor.lastrowid
     else:
         artist_id = artist_id['artist_id']
