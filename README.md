@@ -29,25 +29,25 @@ This program will take any Metacritic music album chart and scrape it for releva
 
 ## Steps: 
 
-###Clone the project
+### Clone the project
 
 ```bash
   git clone https://github.com/doronreiffman/web_scraper
 ```
 
-###Go to the project directory
+### Go to the project directory
 
 ```bash
   cd web_scraper
 ```
 
-###Install dependencies
+### Install dependencies
 
 ```bash
   pip install -r requirements.txt
 ```
 
-###Save MySQL login information
+### Save MySQL login information
 
 
 ```bash
@@ -55,13 +55,13 @@ This program will take any Metacritic music album chart and scrape it for releva
 ```
 * **Note: The login information is saved in login.json file**
 
-###Create top_albums database
+### Create top_albums database
 
 ```bash
   python ./metacritic_scraper.py settings -i
 ```
 
-###Update top_albums database
+### Update top_albums database
 
 1. Example of updating the database with the top albums in 2013 by meta_score (with long and short notation):
 * **Note: These arguments are required:  --filter,  --year,  --sort**
@@ -131,8 +131,67 @@ options:
 ```
 ## ERD
 
-![Output in Pycharm](https://user-images.githubusercontent.com/100131903/159134969-624aab99-3c38-4357-8aec-8d2f8c221e39.jpg
+![Output in Pycharm](https://github.com/doronreiffman/doronreiffman.github.io/blob/main/WhatsApp%20Image%202022-03-23%20at%207.48.38%20PM.jpeg
 )
+
+## Tables and Explanations
+
+* **chart_history**: Saves information about each time the program is run
+  * scrape_id: auto-incrementing id for each individual scrape done within the chart 
+  * scrape_date: the datetime the scrape was run
+  * chart_id: the chart that was scraped (references charts table)
+  * album_id: references albums table
+  * artist_id: references artists table
+  * publisher_id: references publishers table
+  * metascore: the score given by critics to the album
+  * user_score: the score given by users to the album
+  * num_of_critic_reviews: the total number of scraped critic reviews
+  * num_of_user_reviews: the total number of scraped user reviews
+  * summary_id references summaries table
+
+* **charts**: saves information about all the charts scraped
+  * chart_id: auto-incrementing id for each chart
+  * filter_by: chart filter method
+  * year: charted year
+  * sorted_by: chart sorting method
+
+* **albums**: saves information about all the albums scraped
+  * album_id: auto-incrementing id for each album
+  * album_name: name of the album
+  * album_link: link to Metacritic page for the album
+  * release_date: the release date of the album
+  * details_and_credits_link: link to Metacritic page with more album details
+  * amazon_link: link to Amazon page to purchase the album
+
+* **artists**: saves information about all the artists scraped
+  * artist_id: auto-incrementing id for each artist
+  * artist_name: name of the artist
+  * artist_link: link to Metacritic page for the artist
+
+* **artists**: saves information about all the artists scraped
+  * artist_id: auto-incrementing id for each artist
+  * artist_name: name of the artist
+  * artist_link: link to Metacritic page for the artist
+
+* **publishers**: saves information about all the publishers scraped
+  * publisher_id: auto-incrementing id for each publisher
+  * publisher_name: name of the publisher
+  * publisher_link: link to Metacritic page for the publisher
+
+* **genres**: saves information about all the genres scraped
+  * genre_id: auto-incrementing id for each genre
+  * genre_name: name of the genre
+
+* **summaries**: saves information about all the summaries scraped
+  * summary_id: auto-incrementing id for each summary
+  * summary: summary text
+  
+* **albums_to_genres**: saves information about album genres; functions as intermediate table for
+many-to-many relationship between albums and genres
+  * album_id: references albums table
+  * genre_id: references genres table
+
+
 ## Contributing
 
 Contributions are always welcome!

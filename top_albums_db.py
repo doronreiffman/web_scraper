@@ -84,6 +84,7 @@ def create_top_albums_db(login_info):
                                     followers_num INT\
                                     );"})
 
+
         # Creates publishers table - contains information about publishers (including name and link)
         sql_create_tables.update({"publishers": "CREATE TABLE IF NOT EXISTS publishers (\
                                       publisher_id int PRIMARY KEY AUTO_INCREMENT,\

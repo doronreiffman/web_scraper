@@ -334,7 +334,6 @@ def scrape(args, login_info):
     ta.add_data(albums_df, login_info, args.filter, args.year, args.sort)
 
 
-
 def parse_args(args_string_list):
     """
     parse_args() is parsing the py file input arguments into the struct args
@@ -404,10 +403,14 @@ def main():
             scrape(args, login_info)
         except ValueError as e:
             print(e)
+            logging.critical(e)
         except AttributeError as e:
             print(e)
+            logging.critical(e)
         except TypeError as e:
             print(e)
+            logging.critical(e)
+
         return
 
     if args.command == 'settings':
@@ -417,3 +420,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
