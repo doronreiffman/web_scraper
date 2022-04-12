@@ -284,12 +284,12 @@ def scrape_chart_page(args, chart_url):
     links = [(cfg.SITE_ADDRESS + i["href"]) for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
 
     # call spotify api for artist popularity
-    artist_popularity = [api.spotify_search(artist_name, 'artist')['artists']['items'][0]['popularity'] for
-                         artist_name in artist_names]
+    artist_popularity = [api.spotify_search(artist_name, 'artist', 'popularity')['artists']['items'][0]['popularity']
+                         for artist_name in artist_names]
 
     # call spotify api for number of followers for artist
-    followers_num = [api.spotify_search(artist_name, 'artist')['artists']['items'][0]['followers']['total'] for
-                     artist_name in artist_names]
+    followers_num = [api.spotify_search(artist_name, 'artist', 'number of followers')
+                     ['artists']['items'][0]['followers']['total'] for artist_name in artist_names]
 
     # Build initial dictionary with preliminary information (info you can find on the main chart page)
     return ({"Album": album_names,
