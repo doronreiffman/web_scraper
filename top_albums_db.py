@@ -84,7 +84,10 @@ def create_top_albums_db(login_info):
             sql_create_table_artists = "CREATE TABLE artists (\
                                         artist_id int PRIMARY KEY AUTO_INCREMENT,\
                                         artist_name varchar(255) UNIQUE,\
-                                        artist_link varchar(255))"
+                                        artist_link varchar(255),\
+                                        popularity INT,\
+                                        followers_num INT\
+                                        )"
 
             # Creates publishers table - contains information about publishers (including name and link)
             sql_create_table_publishers = "CREATE TABLE publishers (\
@@ -276,7 +279,8 @@ def update_artists_table(cursor, id_counter, summary_dict):
     """
     # sql command to add a record into the artists table with name and link to Metacritic artist page
     # If we find an identical artist name, don't add a new record
-    sql_add_artists = "INSERT INTO artists (artist_name, artist_link) VALUES (%s, %s) " \
+    sql_add_artists = "INSERT INTO artists (artist_name, artist_link, popularity, followers_num) VALUES " \
+                      "(%s, %s, %s, %s) " \
                       "ON DUPLICATE KEY UPDATE artist_name=artist_name"
 
     # sql command to update chart_history with the proper album_id
@@ -287,8 +291,11 @@ def update_artists_table(cursor, id_counter, summary_dict):
     artist_increment_count = id_counter
 
     # Execute sql command to insert a new record
-    for artist, artist_link in zip(summary_dict['Artist'], summary_dict['Link to Artist Page']):
-        cursor.execute(sql_add_artists, (artist, artist_link))
+    for artist, artist_link, popularity, followers_num in zip(summary_dict['Artist'],
+                                                              summary_dict['Link to Artist Page'],
+                                                              summary_dict['Artist Popularity'],
+                                                              summary_dict['Number of Followers']):
+        cursor.execute(sql_add_artists, (artist, artist_link, popularity, followers_num))
         last_artist_id = cursor.lastrowid
         # if we added a new record (because we didn't find an identical artist in the table), add its artist_id to
         # the corresponding row in chart_history
