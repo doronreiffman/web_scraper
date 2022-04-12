@@ -33,7 +33,7 @@ import sys
 from datetime import datetime
 import json
 import top_albums_db as ta
-from api_spotify import SpotifyAPI
+import api_spotify as api
 
 # Logging definition
 if cfg.LOGFILE_DEBUG:
@@ -46,8 +46,6 @@ else:
 # TODO: add to separate file?
 client_id = 'fb71510e7a1e42b3b9f23045abba5d39'
 client_secret = '271c34473cfc42b993bde54c906b3c41'
-
-spotify = SpotifyAPI(client_id, client_secret)
 
 
 def save_csv(args, albums_df):
@@ -286,11 +284,11 @@ def scrape_chart_page(args, chart_url):
     links = [(cfg.SITE_ADDRESS + i["href"]) for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
 
     # call spotify api for artist popularity
-    artist_popularity = [spotify.search(artist_name, search_type='artist')['artists']['items'][0]['popularity'] for
+    artist_popularity = [api.spotify_search(artist_name, 'artist')['artists']['items'][0]['popularity'] for
                          artist_name in artist_names]
 
     # call spotify api for number of followers for artist
-    followers_num = [spotify.search(artist_name, search_type='artist')['artists']['items'][0]['followers']['total'] for
+    followers_num = [api.spotify_search(artist_name, 'artist')['artists']['items'][0]['followers']['total'] for
                      artist_name in artist_names]
 
     # Build initial dictionary with preliminary information (info you can find on the main chart page)
