@@ -1,4 +1,5 @@
 from datetime import date
+import requests
 
 # Logging configuration
 LOGFILE_NAME = "logfile.log"
@@ -24,7 +25,6 @@ STRIP_BEG = "\n by "
 STRIP_END = "\n "
 
 # for tests
-
 ARGS_4_TESTS = ['update', '-f', 'year', '-y', '2022', '-s', 'meta_score']
 
 TEST_PAGES = [
@@ -61,3 +61,23 @@ ALBUM_PAGE_COLUMNS = ['Link to Artist Page', 'Publisher', 'Link to Publisher Pag
 
 CHART_PAGE_COLUMNS = ['Album', 'Album Rank', 'Artist', 'Metascore',
                       'User Score', 'Release Date', 'Summary', 'Link to Album Page']
+
+# API Search Config
+
+CLIENT_ID = 'fb71510e7a1e42b3b9f23045abba5d39'
+CLIENT_SECRET = '271c34473cfc42b993bde54c906b3c41'
+
+AUTH_URL = 'https://accounts.spotify.com/api/token'
+BASE_URL = 'https://api.spotify.com/v1'
+AUTH_RESPONSE = requests.post(AUTH_URL, {
+    'grant_type': 'client_credentials',
+    'client_id': CLIENT_ID,
+    'client_secret': CLIENT_SECRET})
+
+# convert the response to JSON
+AUTH_RESPONSE_DATA = AUTH_RESPONSE.json()
+
+# save the access token
+ACCESS_TOKEN = AUTH_RESPONSE_DATA['access_token']
+
+HEADERS = {'Authorization': 'Bearer {token}'.format(token=ACCESS_TOKEN)}

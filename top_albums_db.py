@@ -75,6 +75,12 @@ def create_top_albums_db(login_info):
                                   genre_name varchar(255) UNIQUE\
                                   );"})
 
+        # Create markets table - contains information about available markets of the album
+        sql_create_tables.update({"markets": "CREATE TABLE IF NOT EXISTS markets (\
+                                  market_id int PRIMARY KEY AUTO_INCREMENT,\
+                                  market_code varchar(255) UNIQUE\
+                                  );"})
+
         # Creates artists table - contains information about artists (including name and artist link)
         sql_create_tables.update({"artists": "CREATE TABLE IF NOT EXISTS artists (\
                                     artist_id int PRIMARY KEY AUTO_INCREMENT,\
@@ -83,7 +89,6 @@ def create_top_albums_db(login_info):
                                     popularity INT,\
                                     followers_num INT\
                                     );"})
-
 
         # Creates publishers table - contains information about publishers (including name and link)
         sql_create_tables.update({"publishers": "CREATE TABLE IF NOT EXISTS publishers (\
@@ -122,6 +127,16 @@ def create_top_albums_db(login_info):
                                   genre_id int,\
                                   PRIMARY KEY (album_id, genre_id),\
                                   FOREIGN KEY (genre_id) REFERENCES genres(genre_id),\
+                                  FOREIGN KEY (album_id) REFERENCES albums(album_id)\
+                                 );"})
+
+        # Creates albums_to_markets table - functions as an intermediate table for the many-to-many relationship
+        # between albums and markets
+        sql_create_tables.update({"albums_to_markets": "CREATE TABLE IF NOT EXISTS albums_to_markets (\
+                                  album_id int,\
+                                  market_id int,\
+                                  PRIMARY KEY (album_id, market_id),\
+                                  FOREIGN KEY (market_id) REFERENCES markets(market_id),\
                                   FOREIGN KEY (album_id) REFERENCES albums(album_id)\
                                  );"})
 
@@ -323,6 +338,59 @@ def update_genres_table(cursor, row):
     return cursor, genre_id_list
 
 
+def update_markets_table(cursor, row):
+    """
+    Take dictionary of scraped data and add relevant information to markets table in top_albums database
+    :param cursor: cursor of pymysql.connect
+    :param row: a Series with the scrapped information of an album from the chart
+    :return: cursor: cursor of pymysql.connect
+    :return: market_id
+    """
+    market_id_list = list()
+    for market in row['Available Markets']:
+
+        # Find if market already exists
+        query = "SELECT market_id FROM markets WHERE market_code = (%s)"
+        cursor.execute(query, market)
+        market_id = cursor.fetchone()
+
+        # Insert if not exists
+        if market_id is None:
+            # sql command to add a genre into genres table
+            query = "INSERT INTO markets (market_code) VALUES (%s) "
+            cursor.execute(query, market)
+            market_id_list.append(cursor.lastrowid)
+        else:
+            market_id_list.append(market_id['market_id'])
+
+    return cursor, market_id_list
+
+
+def update_albums_to_markets(cursor, album_id, market_id_list):
+    """
+    Take dictionary of scraped data and add relevant information to markets table in top_albums database
+    :param cursor: cursor of pymysql.connect
+    :param album_id:
+    :param market_id_list:
+    :return: cursor: cursor of pymysql.connect
+    """
+
+    for market_id in market_id_list:
+
+        # Find if album_id and market_id already exists
+        query = "SELECT * FROM albums_to_markets WHERE album_id = (%s) AND market_id = (%s)"
+        cursor.execute(query, (album_id, market_id))
+        market_album = cursor.fetchone()
+
+        # Insert if not exists
+        if market_album is None:
+            # sql command to add album_id and market_id into market_to_genres table
+            query = "INSERT INTO albums_to_markets (album_id, market_id) VALUES (%s, %s)"
+            cursor.execute(query, (album_id, market_id))
+
+    return cursor
+
+
 def update_albums_to_genres(cursor, album_id, genre_id_list):
     """
     Take dictionary of scraped data and add relevant information to genres table in top_albums database
@@ -407,11 +475,17 @@ def add_data(albums_df, login_info, filter_by_arg, year_arg, sort_by_arg):
                 # Update genres table
                 cursor, genre_id_list = update_genres_table(cursor, row)
 
+                # Update markets table
+                cursor, market_id_list = update_markets_table(cursor, row)
+
                 # Update albums table
                 cursor, album_id = update_albums_table(cursor, row, artist_id, publisher_id, summary_id)
 
                 # Update albums_to_genres table
                 cursor = update_albums_to_genres(cursor, album_id, genre_id_list)
+
+                # Update albums_to_markets table
+                cursor = update_albums_to_markets(cursor, album_id, market_id_list)
 
                 # Update chart_history table
                 cursor = update_chart_history_table(cursor, row, chart_id, album_id)
@@ -421,5 +495,5 @@ def add_data(albums_df, login_info, filter_by_arg, year_arg, sort_by_arg):
             logging.info("Database was updated successfully.")
 
         except Exception as e:
-            logging.critical(f"Failed updating database. Exiting program.{e}\n")
+            logging.critical(f"Failed updating database. Exiting program.\n{e}")
             cursor.execute("rollback")

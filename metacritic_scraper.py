@@ -279,36 +279,6 @@ def scrape_chart_page(args, chart_url):
     # Scraping links to individual album pages (for use later)
     links = [(cfg.SITE_ADDRESS + i["href"]) for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
 
-    # call spotify api for artist popularity, inserts 0 if no Spotify results
-    artist_popularity = []
-    for artist_name in artist_names:
-        try:
-            artist_popularity.append(api.spotify_search(artist_name, 'artist', 'number of followers')
-                     ['artists']['items'][0]['followers']['total'])
-        except IndexError:
-            print(f"No result found for {artist_name}")
-            artist_popularity.append(0)
-
-    # call spotify api for number of followers for artist, inserts 0 if no Spotify results
-    followers_num = []
-    for artist_name in artist_names:
-        try:
-            followers_num.append(api.spotify_search(artist_name, 'artist', 'number of followers')
-                     ['artists']['items'][0]['followers']['total'])
-        except IndexError:
-            print(f"No result found for {artist_name}")
-            followers_num.append(0)
-
-    # call spotify api for number of tracks on album, inserts 0 if no Spotify results
-    num_of_tracks = []
-    for album_name, artist_name in zip(album_names, artist_names):
-        try:
-            num_of_tracks.append(api.spotify_search(album_name+' '+(''.join(artist_name.split('&'))),
-                                                    'album', 'number of tracks')['albums']['items'][0]['total_tracks'])
-        except IndexError:
-            print(f"No result found for {album_name} - {artist_name}")
-            followers_num.append(0)
-
     # Build initial dictionary with preliminary information
     # (info you can find on the main chart page and via Spotify API)
     return ({"Album": album_names,
@@ -318,10 +288,72 @@ def scrape_chart_page(args, chart_url):
              "User Score": userscores,
              "Release Date": release_dates,
              "Summary": summaries,
-             "Link to Album Page": links,
-             "Spotify Artist Popularity": artist_popularity,
-             "Number of Spotify Followers": followers_num,
-             "Number of Tracks": num_of_tracks})
+             "Link to Album Page": links})
+
+
+def scrape_spotify_api(args, album_names, artist_names):
+    """
+    Calls Spotify API for additional attributes
+    :param args: a Struct with all the input arguments of the py file
+    :param album_names: a list of albums in the searched chart
+    :param artist_names: a list of artists of the albums in the searched chart
+    :return: a dictionary with the data scraped from Spotify api
+    """
+    # call spotify api for artist, inserts 0 if no Spotify results
+    artist_popularity = []
+    followers_num = []
+    for artist_name in artist_names:
+        if args.progress:
+            print(f"Calling Spotify API, searching for {artist_name} in 'artists'")
+        try:
+            api_search = api.spotify_search(artist_name, 'artist')
+        except Exception as e:
+            logging.warning(f"No result found in spotify api for {artist_name}. added 0 instead \n {e}")
+            artist_popularity.append(0)
+            followers_num.append(0)
+            continue
+        try:
+            artist_popularity.append(api_search['artists']['items'][0]['popularity'])
+        except IndexError:
+            logging.warning(f"No result found in spotify api for {artist_name} popularity. added 0 instead")
+            artist_popularity.append(0)
+        try:
+            followers_num.append(api_search['artists']['items'][0]['followers']['total'])
+        except IndexError:
+            logging.warning(f"No result found in spotify api for {artist_name} followers. added 0 instead")
+            followers_num.append(0)
+
+    # call spotify api for album, inserts 0 if no Spotify results
+    num_of_tracks = []
+    markets = []
+    for album_name, artist_name in zip(album_names, artist_names):
+        if args.progress:
+            print(f"Calling Spotify API, searching for {album_name} of {artist_name} in 'albums'")
+        try:
+            api_search = api.spotify_search(album_name + ' ' + (''.join(artist_name.split('&'))), 'album')
+        except Exception as e:
+            logging.warning(f"No result found in spotify api for {album_name} of {artist_name}. added 0 instead \n {e}")
+            num_of_tracks.append(0)
+            markets.append(0)
+            continue
+        try:
+            num_of_tracks.append(api_search['albums']['items'][0]['total_tracks'])
+        except IndexError:
+            logging.warning(
+                f"No result found in spotify api for {album_name} of {artist_name} 'number of tracks'. added 0 instead")
+            num_of_tracks.append(0)
+        try:
+            markets.append(api_search['albums']['items'][0]['available_markets'])
+        except IndexError:
+            logging.warning(f"No result found in spotify api for {album_name}-{artist_name} 'markets'. added 0 instead")
+            markets.append(0)
+
+    # Build initial dictionary with preliminary information
+    # (info you can find on the main chart page and via Spotify API)
+    return {"Spotify Artist Popularity": artist_popularity,
+            "Number of Spotify Followers": followers_num,
+            "Number of Tracks": num_of_tracks,
+            "Available Markets": markets}
 
 
 def scrape(args, login_info):
@@ -337,6 +369,9 @@ def scrape(args, login_info):
 
     # Scrape the chart page
     albums_dict = scrape_chart_page(args, chart_url)
+
+    # update dictionary with results from spotify api
+    albums_dict.update(scrape_spotify_api(args, albums_dict["Album"], albums_dict["Artist"]))
 
     # Update dictionary with results of individual album page scraping
     albums_dict.update(scrape_album_page(args, albums_dict["Link to Album Page"]))
