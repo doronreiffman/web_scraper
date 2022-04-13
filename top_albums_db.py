@@ -108,7 +108,8 @@ def create_top_albums_db(login_info):
                                   release_date datetime,\
                                   summary_id int,\
                                   artist_id int,\
-                                  publisher_id int,\
+                                  publisher_id int, \
+                                  num_of_tracks int, \
                                   FOREIGN KEY (summary_id) REFERENCES summaries(summary_id),\
                                   FOREIGN KEY (artist_id) REFERENCES artists(artist_id),\
                                   FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id)\
@@ -201,11 +202,11 @@ def update_albums_table(cursor, row, artist_id, publisher_id, summary_id):
         # sql command to add a record into albums table with name, link to Metacritic album page, link to Metacritic
         # page with more album details, link to purchase album on Amazon, and album release date.
         query = "INSERT INTO albums (album_name, album_link, details_and_credits_link, amazon_link, " \
-                "release_date, artist_id, publisher_id, summary_id) " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) " \
+                "release_date, num_of_tracks, artist_id, publisher_id, summary_id) " \
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) " \
                 "ON DUPLICATE KEY UPDATE album_name=album_name"
         cursor.execute(query, (row['Album'], row['Link to Album Page'], row['Link to More Details and Album Credits'],
-                               row['Amazon Link'], row['Release Date'],
+                               row['Amazon Link'], row['Release Date'], row['Number of Tracks'],
                                artist_id, publisher_id, summary_id))
         album_id = cursor.lastrowid
     else:

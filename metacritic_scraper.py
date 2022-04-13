@@ -291,7 +291,12 @@ def scrape_chart_page(args, chart_url):
     followers_num = [api.spotify_search(artist_name, 'artist', 'number of followers')
                      ['artists']['items'][0]['followers']['total'] for artist_name in artist_names]
 
-    # Build initial dictionary with preliminary information (info you can find on the main chart page)
+    # call spotify api for number of tracks on album
+    num_of_tracks = [api.spotify_search(album_name, 'album', 'number of tracks')['albums']['items'][0]['total_tracks']
+                     for album_name in album_names]
+
+    # Build initial dictionary with preliminary information
+    # (info you can find on the main chart page and via Spotify API)
     return ({"Album": album_names,
              "Album Rank": ranks,
              "Artist": artist_names,
@@ -301,7 +306,8 @@ def scrape_chart_page(args, chart_url):
              "Summary": summaries,
              "Link to Album Page": links,
              "Spotify Artist Popularity": artist_popularity,
-             "Number of Spotify Followers": followers_num})
+             "Number of Spotify Followers": followers_num,
+             "Number of Tracks": num_of_tracks})
 
 
 def scrape(args, login_info):
@@ -420,5 +426,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
