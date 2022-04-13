@@ -43,10 +43,6 @@ else:
     logging.basicConfig(filename=cfg.LOGFILE_NAME, format="%(asctime)s %(levelname)s: %(message)s",
                         level=logging.INFO)
 
-# TODO: add to separate file?
-client_id = 'fb71510e7a1e42b3b9f23045abba5d39'
-client_secret = '271c34473cfc42b993bde54c906b3c41'
-
 
 def save_csv(args, albums_df):
     """
@@ -283,17 +279,35 @@ def scrape_chart_page(args, chart_url):
     # Scraping links to individual album pages (for use later)
     links = [(cfg.SITE_ADDRESS + i["href"]) for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
 
-    # call spotify api for artist popularity
-    artist_popularity = [api.spotify_search(artist_name, 'artist', 'popularity')['artists']['items'][0]['popularity']
-                         for artist_name in artist_names]
+    # call spotify api for artist popularity, inserts 0 if no Spotify results
+    artist_popularity = []
+    for artist_name in artist_names:
+        try:
+            artist_popularity.append(api.spotify_search(artist_name, 'artist', 'number of followers')
+                     ['artists']['items'][0]['followers']['total'])
+        except IndexError:
+            print(f"No result found for {artist_name}")
+            artist_popularity.append(0)
 
-    # call spotify api for number of followers for artist
-    followers_num = [api.spotify_search(artist_name, 'artist', 'number of followers')
-                     ['artists']['items'][0]['followers']['total'] for artist_name in artist_names]
+    # call spotify api for number of followers for artist, inserts 0 if no Spotify results
+    followers_num = []
+    for artist_name in artist_names:
+        try:
+            followers_num.append(api.spotify_search(artist_name, 'artist', 'number of followers')
+                     ['artists']['items'][0]['followers']['total'])
+        except IndexError:
+            print(f"No result found for {artist_name}")
+            followers_num.append(0)
 
-    # call spotify api for number of tracks on album
-    num_of_tracks = [api.spotify_search(album_name, 'album', 'number of tracks')['albums']['items'][0]['total_tracks']
-                     for album_name in album_names]
+    # call spotify api for number of tracks on album, inserts 0 if no Spotify results
+    num_of_tracks = []
+    for album_name, artist_name in zip(album_names, artist_names):
+        try:
+            num_of_tracks.append(api.spotify_search(album_name+' '+(''.join(artist_name.split('&'))),
+                                                    'album', 'number of tracks')['albums']['items'][0]['total_tracks'])
+        except IndexError:
+            print(f"No result found for {album_name} - {artist_name}")
+            followers_num.append(0)
 
     # Build initial dictionary with preliminary information
     # (info you can find on the main chart page and via Spotify API)
