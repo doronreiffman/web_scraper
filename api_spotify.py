@@ -8,21 +8,6 @@ from urllib.parse import urlencode
 import logging
 
 
-# application link: https://developer.spotify.com/dashboard/applications/fb71510e7a1e42b3b9f23045abba5d39
-
-# TODO: move to tests
-def perform_auth():
-    """
-    checks validity of access token
-    """
-    if cfg.CLIENT_ID is None or cfg.CLIENT_SECRET is None:
-        raise Exception("You must set client_id and client_secret")
-    r = requests.post(cfg.AUTH_URL, data=cfg.AUTH_RESPONSE_DATA, headers=cfg.HEADERS)
-    if r.status_code not in range(200, 299):
-        raise Exception("Could not authenticate client.")
-    return True
-
-
 def spotify_search(query, search_type):
     """
     Searches Spotify with given query and search_type using Spotify's API, returns json with results

@@ -205,6 +205,9 @@ def scrape_album_page(args, pages_url):
                     f"There was no Amazon link found on {pages_url[soup_num]}. Added an empty cell instead.")
                 album_details_dict.setdefault('Amazon Link', []).append('')
 
+    if args.progress:
+        print("Scraping Progress: 100.0%")
+
     return album_details_dict
 
 
@@ -341,7 +344,7 @@ def scrape_spotify_api(args, album_names, artist_names):
             num_of_tracks.append(api_search['albums']['items'][0]['total_tracks'])
         except IndexError:
             logging.warning(
-              f"No result found in Spotify API for '{album_name} {artist_name}' - 'number of tracks'. added 0 instead")
+                f"No result found in Spotify API for '{album_name} {artist_name}' - 'number of tracks'. added 0 instead")
             num_of_tracks.append(0)
 
         # available markets
@@ -383,7 +386,6 @@ def scrape(args, login_info):
 
     # Turn dictionary with all details into DataFrame (can be removed if pandas is forbidden)
     albums_df = pd.DataFrame(albums_dict)
-    print(albums_df)
 
     # Create csv file from DataFrame (for better organization)
     if args.save:
