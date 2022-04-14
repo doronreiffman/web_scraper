@@ -423,7 +423,7 @@ def parse_args(args_string_list):
     update.add_argument('-y', '--year', type=str, required=True,
                         help=f'Albums year release: {min(cfg.YEAR_RELEASE.keys())} to {max(cfg.YEAR_RELEASE.keys())}')
     update.add_argument('-s', '--sort', type=str, required=True, help=f'Sort albums: {list(cfg.SORT_BY.keys())}')
-    update.add_argument('-b', '--batch', type=int, help='grequest batch size', default=1)
+    update.add_argument('-b', '--batch', type=int, help='grequests batch size', default=1)
     update.add_argument('-m', '--max', type=int, help="Maximum number of albums to scrape")
     update.add_argument('-p', '--progress', help=f'Shows scraping progress', action='store_true')
     update.add_argument('-u', '--url', help=f'Shows scraped urls', action='store_true')
