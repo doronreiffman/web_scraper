@@ -27,7 +27,7 @@ The program then stores all the information to a database called top_albums.
 ## Example
 
 ```javascript
-# Returns information about the top-rated albums of all time, 
+# Returns and stores information about the top-rated albums of all time, 
 # based on the following link: 
 # https://www.metacritic.com/browse/albums/score/metascore/all/
 
@@ -71,19 +71,20 @@ The program then stores all the information to a database called top_albums.
 ```
 
 ### Update top_albums database
-* Example of updating the database with the top albums in 2013 by meta_score (with long and short notation):
+* Example of updating the database with the top albums in 2021 by meta_score (with long and short notation):
   * **Note: These arguments are required:  --filter,  --year,  --sort**
 
 ```bash
-  python ./metacritic_scraper.py update --filter year --year 2013 --sort meta_score
-  python ./metacritic_scraper.py update -f year -y 2013 -s meta_score
+  python ./metacritic_scraper.py update --filter year --year 2021 --sort meta_score
+  python ./metacritic_scraper.py update -f year -y 2021 -s meta_score
 ```
 
-* Same example using batch of 10 urls in grequests and showing the progress (with long and short notation):
+* Same example using batch of 10 urls in grequests and showing the scraped urls and the progress, while only taking the
+first 10 results (with long and short notation):
 
 ```bash
-  python ./metacritic_scraper.py update --filter year --year 2013 --sort meta_score --batch 10 --url --progress
-  python ./metacritic_scraper.py update -f year -y 2013 -s meta_score -b 10 -u -p
+  python ./metacritic_scraper.py update --filter year --year 2021 --sort meta_score --batch 10 --url --progress --max 5
+  python ./metacritic_scraper.py update -f year -y 2021 -s meta_score -b 10 -u -p -m 5
 ```
 * For more information about updating the database use the help flag:
 
