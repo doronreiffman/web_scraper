@@ -344,7 +344,7 @@ def scrape_spotify_api(args, album_names, artist_names):
             num_of_tracks.append(api_search['albums']['items'][0]['total_tracks'])
         except IndexError:
             logging.warning(
-                f"No result found in Spotify API for '{album_name} {artist_name}' - 'number of tracks'. added 0 instead")
+               f"No result found in Spotify API for '{album_name} {artist_name}' - 'number of tracks'. added 0 instead")
             num_of_tracks.append(0)
 
         # available markets
