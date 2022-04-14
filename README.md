@@ -209,10 +209,13 @@ many-to-many relationship between albums and genres
 * **markets**: saves information about all the markets scraped
   * market_id: auto-incrementing id for each market
   * market_code: The market (an ISO 3166-1 alpha-2 country code)
+
   
 
 * **albums_to_markets**: saves information about markets in which the album is available; functions as intermediate table for 
-many-to-many relationship between albums and markets
+   many-to-many relationship between albums and markets 
+
+  (Note: an album is considered available in a market when at least one of its tracks is available in that market)
   * album_id: references albums table
   * market_id: references markets table
 

@@ -5,6 +5,7 @@ Calls Spotify API for additional attributes
 import config as cfg
 import requests
 from urllib.parse import urlencode
+import logging
 
 
 # application link: https://developer.spotify.com/dashboard/applications/fb71510e7a1e42b3b9f23045abba5d39
@@ -43,9 +44,15 @@ def spotify_search(query, search_type):
     endpoint = f"{cfg.BASE_URL}/search"
     search_params = urlencode({"q": query, "type": search_type.lower()})
     lookup_url = f"{endpoint}?{search_params}"
-    r = requests.get(lookup_url, headers=cfg.HEADERS)
+
+    try:
+        r = requests.get(lookup_url, headers=cfg.HEADERS)
+    except Exception as e:
+        logging.warning(f"Search for {query} was unsuccessful. \n {e}")
+        raise Exception(f"Search for {query} was unsuccessful. \n {e}.")
 
     # check that our search was successful
     if r.status_code not in range(200, 299):
-        raise Exception("Could not complete search.")
+        logging.warning(f"Could not complete search for {query}.")
+        raise Exception(f"Could not complete search for {query}.")
     return r.json()
