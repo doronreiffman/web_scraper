@@ -98,7 +98,7 @@ options:
   -s SORT, --sort SORT        Sort albums: ['meta_score', 'user_score']
   -b BATCH, --batch BATCH     grequest batch size
   -m MAX, --max MAX           Maximum number of albums to scrape
-  -p, --progress              Shows scraping progress
+  -p, --progress              Shows scraping and API query progress
   -u, --url                   Shows scraped urls
   -S, --save                  Saves csv file with the data
 ```
