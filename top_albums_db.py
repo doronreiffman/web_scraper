@@ -37,6 +37,148 @@ def connect_to_db(login_info, database=''):
     return connect.cursor()
 
 
+def charts_table_description():
+    """
+    :return: returns a dictionary with the description of 'charts' table
+    """
+
+    return {"charts": "CREATE TABLE IF NOT EXISTS charts (\
+                                      chart_id int PRIMARY KEY AUTO_INCREMENT, \
+                                      filter_by varchar(255), \
+                                      year int, \
+                                      sort_by varchar(255)\
+                                      );"}
+
+
+def genres_table_description():
+    """
+    :return: returns a dictionary with the description of 'genres' table
+    """
+
+    return {"genres": "CREATE TABLE IF NOT EXISTS genres (\
+                                      genre_id int PRIMARY KEY AUTO_INCREMENT,\
+                                      genre_name varchar(255) UNIQUE\
+                                      );"}
+
+
+def markets_table_description():
+    """
+    :return: returns a dictionary with the description of 'markets' table
+    """
+
+    return {"markets": "CREATE TABLE IF NOT EXISTS markets (\
+                                  market_id int PRIMARY KEY AUTO_INCREMENT,\
+                                  market_code varchar(255) UNIQUE\
+                                  );"}
+
+
+def artists_table_description():
+    """
+    :return: returns a dictionary with the description of 'artists' table
+    """
+
+    return {"artists": "CREATE TABLE IF NOT EXISTS artists (\
+                                    artist_id int PRIMARY KEY AUTO_INCREMENT,\
+                                    artist_name varchar(255) UNIQUE,\
+                                    artist_link varchar(255),\
+                                    popularity INT,\
+                                    followers_num INT\
+                                    );"}
+
+
+def publishers_table_description():
+    """
+    :return: returns a dictionary with the description of 'publishers' table
+    """
+
+    return {"publishers": "CREATE TABLE IF NOT EXISTS publishers (\
+                                      publisher_id int PRIMARY KEY AUTO_INCREMENT,\
+                                      publisher_name varchar(255) UNIQUE,\
+                                      publisher_link varchar(255)\
+                                      );"}
+
+
+def summaries_table_description():
+    """
+    :return: returns a dictionary with the description of 'summaries' table
+    """
+
+    return {"summaries": "CREATE TABLE IF NOT EXISTS summaries (\
+                                      summary_id int PRIMARY KEY AUTO_INCREMENT,\
+                                      summary VARCHAR(767) UNIQUE\
+                                      );"}
+
+
+def albums_table_description():
+    """
+    :return: returns a dictionary with the description of 'albums' table
+    """
+
+    return {"albums": "CREATE TABLE IF NOT EXISTS albums (\
+                                  album_id int PRIMARY KEY AUTO_INCREMENT, \
+                                  album_name varchar(255) UNIQUE, \
+                                  album_link varchar(255), \
+                                  details_and_credits_link varchar(255),\
+                                  amazon_link TEXT,\
+                                  release_date datetime,\
+                                  summary_id int,\
+                                  artist_id int,\
+                                  publisher_id int, \
+                                  num_of_tracks int, \
+                                  FOREIGN KEY (summary_id) REFERENCES summaries(summary_id),\
+                                  FOREIGN KEY (artist_id) REFERENCES artists(artist_id),\
+                                  FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id)\
+                                  );"}
+
+
+def albums_to_genres_table_description():
+    """
+    :return: returns a dictionary with the description of 'albums_to_genres' table
+    """
+
+    return {"albums_to_genres": "CREATE TABLE IF NOT EXISTS albums_to_genres (\
+                                  album_id int,\
+                                  genre_id int,\
+                                  PRIMARY KEY (album_id, genre_id),\
+                                  FOREIGN KEY (genre_id) REFERENCES genres(genre_id),\
+                                  FOREIGN KEY (album_id) REFERENCES albums(album_id)\
+                                 );"}
+
+
+def albums_to_markets_table_description():
+    """
+    :return: returns a dictionary with the description of 'albums_to_markets' table
+    """
+
+    return {"albums_to_markets": "CREATE TABLE IF NOT EXISTS albums_to_markets (\
+                                  album_id int,\
+                                  market_id int,\
+                                  PRIMARY KEY (album_id, market_id),\
+                                  FOREIGN KEY (market_id) REFERENCES markets(market_id),\
+                                  FOREIGN KEY (album_id) REFERENCES albums(album_id)\
+                                 );"}
+
+
+def chart_history_table_description():
+    """
+    :return: returns a dictionary with the description of 'chart_history' table
+    """
+
+    return {"chart_history": "CREATE TABLE IF NOT EXISTS chart_history (\
+                                  scrape_id int PRIMARY KEY AUTO_INCREMENT,  \
+                                  scrape_datetime datetime,\
+                                  chart_id int,\
+                                  album_id int,\
+                                  album_rank int,\
+                                  metascore int,\
+                                  user_score float,\
+                                  num_of_critic_reviews int,\
+                                  num_of_user_reviews int,\
+                                  FOREIGN KEY (chart_id) REFERENCES charts(chart_id),\
+                                  FOREIGN KEY (album_id) REFERENCES albums(album_id)\
+                                  );"}
+
+
 def create_top_albums_db(login_info):
     """
     Creates a database called 'top_albums' using login info given as a parameter.
@@ -60,103 +202,19 @@ def create_top_albums_db(login_info):
 
         sql_create_tables = dict()
 
-        # Create charts table - contains information about charts (defined by the filter method, the year, and the
-        # sort method
-        sql_create_tables.update({"charts": "CREATE TABLE IF NOT EXISTS charts (\
-                                  chart_id int PRIMARY KEY AUTO_INCREMENT, \
-                                  filter_by varchar(255), \
-                                  year int, \
-                                  sort_by varchar(255)\
-                                  );"})
+        # Gather all the tables descriptions
+        sql_create_tables.update(charts_table_description())
+        sql_create_tables.update(genres_table_description())
+        sql_create_tables.update(markets_table_description())
+        sql_create_tables.update(artists_table_description())
+        sql_create_tables.update(publishers_table_description())
+        sql_create_tables.update(summaries_table_description())
+        sql_create_tables.update(albums_table_description())
+        sql_create_tables.update(albums_to_genres_table_description())
+        sql_create_tables.update(albums_to_markets_table_description())
+        sql_create_tables.update(chart_history_table_description())
 
-        # Creates genres table - contains information about genres
-        sql_create_tables.update({"genres": "CREATE TABLE IF NOT EXISTS genres (\
-                                  genre_id int PRIMARY KEY AUTO_INCREMENT,\
-                                  genre_name varchar(255) UNIQUE\
-                                  );"})
-
-        # Create markets table - contains information about available markets of the album
-        sql_create_tables.update({"markets": "CREATE TABLE IF NOT EXISTS markets (\
-                                  market_id int PRIMARY KEY AUTO_INCREMENT,\
-                                  market_code varchar(255) UNIQUE\
-                                  );"})
-
-        # Creates artists table - contains information about artists (including name and artist link)
-        sql_create_tables.update({"artists": "CREATE TABLE IF NOT EXISTS artists (\
-                                    artist_id int PRIMARY KEY AUTO_INCREMENT,\
-                                    artist_name varchar(255) UNIQUE,\
-                                    artist_link varchar(255),\
-                                    popularity INT,\
-                                    followers_num INT\
-                                    );"})
-
-        # Creates publishers table - contains information about publishers (including name and link)
-        sql_create_tables.update({"publishers": "CREATE TABLE IF NOT EXISTS publishers (\
-                                      publisher_id int PRIMARY KEY AUTO_INCREMENT,\
-                                      publisher_name varchar(255) UNIQUE,\
-                                      publisher_link varchar(255)\
-                                      );"})
-
-        # Creates summaries table - contains information about summaries
-        sql_create_tables.update({"summaries": "CREATE TABLE IF NOT EXISTS summaries (\
-                                      summary_id int PRIMARY KEY AUTO_INCREMENT,\
-                                      summary VARCHAR(767) UNIQUE\
-                                      );"})
-
-        # Creates albums table - contains information about albums (including name and other scraped information)
-        sql_create_tables.update({"albums": "CREATE TABLE IF NOT EXISTS albums (\
-                                  album_id int PRIMARY KEY AUTO_INCREMENT, \
-                                  album_name varchar(255) UNIQUE, \
-                                  album_link varchar(255), \
-                                  details_and_credits_link varchar(255),\
-                                  amazon_link TEXT,\
-                                  release_date datetime,\
-                                  summary_id int,\
-                                  artist_id int,\
-                                  publisher_id int, \
-                                  num_of_tracks int, \
-                                  FOREIGN KEY (summary_id) REFERENCES summaries(summary_id),\
-                                  FOREIGN KEY (artist_id) REFERENCES artists(artist_id),\
-                                  FOREIGN KEY (publisher_id) REFERENCES publishers(publisher_id)\
-                                  );"})
-
-        # Creates albums_to_genres table - functions as an intermediate table for the many-to-many relationship
-        # between albums and genres
-        sql_create_tables.update({"albums_to_genres": "CREATE TABLE IF NOT EXISTS albums_to_genres (\
-                                  album_id int,\
-                                  genre_id int,\
-                                  PRIMARY KEY (album_id, genre_id),\
-                                  FOREIGN KEY (genre_id) REFERENCES genres(genre_id),\
-                                  FOREIGN KEY (album_id) REFERENCES albums(album_id)\
-                                 );"})
-
-        # Creates albums_to_markets table - functions as an intermediate table for the many-to-many relationship
-        # between albums and markets
-        sql_create_tables.update({"albums_to_markets": "CREATE TABLE IF NOT EXISTS albums_to_markets (\
-                                  album_id int,\
-                                  market_id int,\
-                                  PRIMARY KEY (album_id, market_id),\
-                                  FOREIGN KEY (market_id) REFERENCES markets(market_id),\
-                                  FOREIGN KEY (album_id) REFERENCES albums(album_id)\
-                                 );"})
-
-        # Creates chart_history table - contains information about when the scrape occurred and what the
-        # chart looked like at the time
-        sql_create_tables.update({"chart_history": "CREATE TABLE IF NOT EXISTS chart_history (\
-                                  scrape_id int PRIMARY KEY AUTO_INCREMENT,  \
-                                  scrape_datetime datetime,\
-                                  chart_id int,\
-                                  album_id int,\
-                                  album_rank int,\
-                                  metascore int,\
-                                  user_score float,\
-                                  num_of_critic_reviews int,\
-                                  num_of_user_reviews int,\
-                                  FOREIGN KEY (chart_id) REFERENCES charts(chart_id),\
-                                  FOREIGN KEY (album_id) REFERENCES albums(album_id)\
-                                  );"})
-
-        try:
+        try:  # Creates tables in the database
             for table in sql_create_tables.keys():
                 cursor.execute(sql_create_tables[table])
             cursor.execute("COMMIT")
@@ -347,6 +405,7 @@ def update_markets_table(cursor, row):
     :return: market_id
     """
     market_id_list = list()
+
     for market in row['Available Markets']:
 
         # Find if market already exists
