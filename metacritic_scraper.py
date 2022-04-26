@@ -123,12 +123,13 @@ def spotify_search(query, search_type):
         r = requests.get(lookup_url, headers=cfg.HEADERS)
     except Exception as e:
         logging.warning(f"Search for {query} was unsuccessful. \n {e}")
-        raise ValueError(f"Search for {query} was unsuccessful. \n {e}.")
+        return []
 
     # check that our search was successful
     if r.status_code not in range(200, 299):
         logging.warning(f"Could not complete search for {query}.")
-        raise ValueError(f"Could not complete search for {query}.")
+        return []
+
     return r.json()
 
 
@@ -285,7 +286,7 @@ def scrape_spotify_api_albums(args, album_names, artist_names):
         # total tracks
         try:
             num_of_tracks.append(api_search['albums']['items'][0]['total_tracks'])
-        except IndexError:
+        except (IndexError, TypeError):
             logging.warning(
                 f"No result found in Spotify API for '{album_name} {artist_name}' - 'number of tracks'.added 0 instead")
             num_of_tracks.append(0)
@@ -293,7 +294,7 @@ def scrape_spotify_api_albums(args, album_names, artist_names):
         # available markets
         try:
             markets.append(api_search['albums']['items'][0]['available_markets'])
-        except IndexError:
+        except (IndexError, TypeError):
             logging.warning(
                 f"No result found in Spotify API for '{album_name} {artist_name}' - 'markets'. added None instead")
             markets.append(['None'])
