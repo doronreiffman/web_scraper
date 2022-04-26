@@ -10,7 +10,7 @@ SITE_ADDRESS = "https://www.metacritic.com"
 FILTER_BY = {'all_time': 'all/', '90_days': '90day/', 'year': 'year/', 'discussed': 'discussed/',
              'shared': 'shared/'}
 SORT_BY = {'meta_score': '/browse/albums/score/metascore/', 'user_score': '/browse/albums/score/userscore/'}
-YEAR_RELEASE = {str(year): 'filtered?year_selected=' + str(year) for year in range(2010, date.today().year + 1)}
+YEAR_RELEASE = {str(year): 'filtered?year_selected=' + str(year) for year in range(1999, date.today().year + 1)}
 DATA_FOLDER = 'data/'
 
 #  requests status configuration
