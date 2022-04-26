@@ -82,15 +82,12 @@ def use_grequests(page_url):
     # Check if the request status is valid
     soups = []
     for i, page in enumerate(pages):
-        try:  # check if there was a successful response
-            if cfg.REQ_STATUS_LOWER <= page.status_code <= cfg.REQ_STATUS_UPPER:
-                logging.info(f"{page_url[i]} was requested successfully.")
-            else:
-                logging.critical(f"{page_url[i]} was not requested successfully. Exiting program.")
-                raise ValueError(f'The link was not valid for scraping\n{page_url[i]}')
-        except AttributeError:
-            logging.critical(f"{page_url[i]} was not requested successfully. Exiting program.")
-            raise AttributeError(f'The link was not valid for scraping\n{page_url[i]}')
+        # check if there was a successful response
+        if page.status_code and (cfg.REQ_STATUS_LOWER <= page.status_code <= cfg.REQ_STATUS_UPPER):
+            logging.info(f"{page_url[i]} was requested successfully.")
+        else:
+            logging.warning(f"{page_url[i]} was not requested successfully. Exiting program.")
+            continue
         soups.append(BeautifulSoup(page.content, 'html.parser'))
 
     return soups
@@ -123,12 +120,12 @@ def spotify_search(query, search_type):
         r = requests.get(lookup_url, headers=cfg.HEADERS)
     except Exception as e:
         logging.warning(f"Search for {query} was unsuccessful. \n {e}")
-        return []
+        r = requests.models.Response()
 
     # check that our search was successful
     if r.status_code not in range(200, 299):
         logging.warning(f"Could not complete search for {query}.")
-        return []
+        r = requests.models.Response()
 
     return r.json()
 
