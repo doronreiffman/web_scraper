@@ -27,6 +27,8 @@ STRIP_END = "\n "
 # for tests
 ARGS_4_TESTS = ['update', '-f', 'year', '-y', '2022', '-s', 'meta_score']
 
+TEST_CHART = 'https://www.metacritic.com/browse/albums/score/metascore/year/filtered?year_selected=2021'
+
 TEST_PAGES = [
     'https://www.metacritic.com/music/my-beautiful-dark-twisted-fantasy/kanye-west',
     'https://www.metacritic.com/music/the-archandroid/janelle-monae',
@@ -55,12 +57,13 @@ TEST_PAGES = [
     'https://www.metacritic.com/music/this-is-happening/lcd-soundsystem'
 ]
 
-ALBUM_PAGE_COLUMNS = ['Link to Artist Page', 'Publisher', 'Link to Publisher Page', 'Album Cover Image', 'Album Genres',
-                      'No. of Critic Reviews', 'Link to Critic Reviews', 'No. of User Reviews', 'Link to User Reviews',
-                      'Link to More Details and Album Credits', 'Amazon Link']
+ALBUM_PAGE_COLUMNS = ['Publisher', 'Album Genres', 'No. of Critic Reviews', 'No. of User Reviews',
+                      'Link to Artist Page', 'Link to Publisher Page', 'Album Cover Image', 'Link to User Reviews',
+                      'Link to More Details and Album Credits', 'Link to Critic Reviews', 'Amazon Link']
 
-CHART_PAGE_COLUMNS = ['Album', 'Album Rank', 'Artist', 'Metascore',
-                      'User Score', 'Release Date', 'Summary', 'Link to Album Page']
+CHART_PAGE_COLUMNS1 = ['Album', 'Artist', 'Release Date', 'Summary', 'Link to Album Page']
+
+CHART_PAGE_COLUMNS2 = ['Album Rank', 'Metascore', 'User Score']
 
 # API Search Config
 

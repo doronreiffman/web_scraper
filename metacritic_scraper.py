@@ -132,12 +132,12 @@ def spotify_search(query, search_type):
     return r.json()
 
 
-def scrape_albums_details(args, chart_url):
+def scrape_albums_details(args, soup):
     """
     Take given url and scrape:
     Album name, Artist name, Album release date, Link to individual album page, album descriptions
     :param args: a Struct with all the input arguments of the py file
-    :param chart_url: a string of the chart url page
+    :param soup: an object with the page content
     :returns soup: an object with the page content
     :returns a dictionary with information of albums from the chart's url page
     """
@@ -148,9 +148,6 @@ def scrape_albums_details(args, chart_url):
     if args.max is not None and args.max <= 0:
         logging.critical(f"args.max is {args.max} but it must be greater than 0. Exiting program.")
         raise ValueError(f'args.max is {args.max} but it must be greater than 0')
-
-    # Getting chart html
-    soup = use_grequests([chart_url])[0]
 
     #  Scraping album name
     album_name_text = soup.find_all('a', class_='title')
@@ -174,20 +171,28 @@ def scrape_albums_details(args, chart_url):
     # Scraping links to individual album pages (for use later)
     links = [(cfg.SITE_ADDRESS + i["href"]) for n, i in enumerate(album_name_text) if args.max is None or n < args.max]
 
-    return soup, {"Album": album_names, "Artist": artist_names, "Release Date": release_dates, "Summary": summaries,
-                  "Link to Album Page": links}
+    return {"Album": album_names, "Artist": artist_names, "Release Date": release_dates, "Summary": summaries,
+            "Link to Album Page": links}
 
 
-def scrape_albums_scores_rank(args, soup, chart_length):
+def scrape_albums_scores(args, soup, chart_length):
     """
     Take given url and scrape:
-    Album rank, Metascore and user score
+    Album rank, Meta score, user score
     :param args: a Struct with all the input arguments of the py file
     :param soup: an object with the page content
-    :param chart_length: Length of chart
+    :param chart_length: Integer of length of chart
     :returns a dictionary with scores and rank of albums from the chart's url page
     """
-    logging.debug(f"scrape_albums_scores_rank() started")
+    logging.debug(f"scrape_albums_scores() started")
+
+    # Test input validation
+    if args.max is not None and args.max <= 0:
+        logging.critical(f"args.max is {args.max} but it must be greater than 0. Exiting program.")
+        raise ValueError(f'args.max is {args.max} but it must be greater than 0')
+    if type(chart_length) != int:
+        logging.critical(f"chart_length should be integer and not {type(chart_length)}. Exiting program.")
+        raise TypeError(f'chart_length should be integer and not {type(chart_length)}')
 
     # Scraping ranks
     ranks_text = soup.find_all('span', class_='title numbered')
@@ -445,10 +450,12 @@ def scrape(args, login_info):
     # Create the chart url
     chart_url = cfg.SITE_ADDRESS + cfg.SORT_BY[args.sort] + cfg.FILTER_BY[args.filter] + cfg.YEAR_RELEASE[args.year]
     print(f'main url: {chart_url}')
+    # Getting chart html
+    soup = use_grequests([chart_url])[0]
 
     # Scrape albums' information from chart page
-    soup, albums_dict = scrape_albums_details(args, chart_url)
-    albums_dict.update(scrape_albums_scores_rank(args, soup, len(albums_dict["Artist"])))
+    albums_dict = scrape_albums_details(args, soup)
+    albums_dict.update(scrape_albums_scores(args, soup, len(albums_dict["Artist"])))
 
     # update dictionary with results from spotify api
     albums_dict.update(scrape_spotify_api_albums(args, albums_dict["Album"], albums_dict["Artist"]))
@@ -456,6 +463,7 @@ def scrape(args, login_info):
 
     # Update dictionary with results of individual album page scraping
     albums_dict.update(scrape_album_page(args, albums_dict["Link to Album Page"]))
+
     logging.info(f"Scraping information from {chart_url} and all the albums urls was done successfully")
 
     # Turn dictionary with all details into DataFrame (can be removed if pandas is forbidden)

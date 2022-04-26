@@ -163,83 +163,145 @@ def test_scrape_album_page_exception_not_album_page():
         scrape.scrape_album_page(args, chart_url)
 
 
-# ---------------  scrape_chart_page  --------------- #
+# ---------------  scrape_albums_details & scrape_albums_scores  --------------- #
 
-def test_scrape_chart_page_exception_params_not_exists():
+def test_scrape_albums_details_exception_params_not_exists():
     with pytest.raises(TypeError):
-        scrape.scrape_chart_page()
+        scrape.scrape_albums_details()
 
 
-def test_scrape_chart_page_exception_pages_url_not_exists():
+def test_scrape_albums_scores_exception_params_not_exists():
+    with pytest.raises(TypeError):
+        scrape.scrape_albums_details()
+
+
+def test_scrape_albums_details_exception_soup_not_exists():
     args = scrape.parse_args(cfg.ARGS_4_TESTS)
 
     with pytest.raises(TypeError):
-        scrape.scrape_chart_page(args)
+        scrape.scrape_albums_details(args)
 
 
-def test_scrape_chart_page_exception_too_many_arguments():
+def test_scrape_albums_details_exception_too_many_arguments():
     args = scrape.parse_args(cfg.ARGS_4_TESTS)
     chart_url = cfg.TEST_PAGES[0]
+    soup = scrape.use_grequests([chart_url])[0]
 
     with pytest.raises(TypeError):
-        scrape.scrape_chart_page(args, chart_url, chart_url)
+        scrape.scrape_albums_details(args, soup, soup)
 
 
-def test_scrape_chart_page_exception_argument_wrong_type():
+def test_scrape_albums_scores_exception_too_many_arguments():
     args = scrape.parse_args(cfg.ARGS_4_TESTS)
-    chart_url1 = set(cfg.TEST_PAGES[0])
-    chart_url2 = 1
+    chart_url = cfg.TEST_PAGES[0]
+    soup = scrape.use_grequests([chart_url])[0]
+
+    with pytest.raises(TypeError):
+        scrape.scrape_albums_scores(args, soup, 1, 1)
+
+
+def test_scrape_albums_details_exception_argument_wrong_type():
+    args = scrape.parse_args(cfg.ARGS_4_TESTS)
+    chart_url = cfg.TEST_PAGES[0]
+    soup = scrape.use_grequests([chart_url])[0]
+
+    with pytest.raises(TypeError):
+        scrape.scrape_albums_scores(args, soup, '1')
+
+
+def test_scrape_albums_scores_exception_argument_wrong_type():
+    args = scrape.parse_args(cfg.ARGS_4_TESTS)
+    chart_url = cfg.TEST_PAGES[0]
+    soup1 = set(scrape.use_grequests([chart_url])[0])
+    soup2 = 1
 
     with pytest.raises(AttributeError):
-        scrape.scrape_chart_page(args, chart_url1)
+        scrape.scrape_albums_details(args, soup1)
     with pytest.raises(AttributeError):
-        scrape.scrape_chart_page(args, chart_url2)
+        scrape.scrape_albums_details(args, soup2)
 
 
-def test_scrape_chart_page_exception_bad_url_link():
+def test_scrape_albums_details_exception_empty_soup():
     args = scrape.parse_args(cfg.ARGS_4_TESTS)
-    chart_url = "https://www.metacritic.com/bad_link_for_testing"
-    with pytest.raises(ValueError):
-        scrape.scrape_chart_page(args, chart_url)
+    soup = []
 
-
-def test_scrape_chart_page_exception_empty_chart_url():
-    args = scrape.parse_args(cfg.ARGS_4_TESTS)
-    chart_url = ''
     with pytest.raises(AttributeError):
-        scrape.scrape_chart_page(args, chart_url)
+        scrape.scrape_albums_details(args, soup)
 
 
-def test_scrape_chart_page_max_bigger_than_chart_length():
+def test_scrape_albums_scores_exception_empty_soup():
+    args = scrape.parse_args(cfg.ARGS_4_TESTS)
+    soup = []
+
+    with pytest.raises(AttributeError):
+        scrape.scrape_albums_scores(args, soup, 1)
+
+
+def test_scrape_albums_details_max_bigger_than_chart_length():
     args = scrape.parse_args(cfg.ARGS_4_TESTS + ['-m1000'])
+    chart_url = cfg.TEST_CHART
+    soup = scrape.use_grequests([chart_url])[0]
 
-    chart_url = 'https://www.metacritic.com/browse/albums/score/metascore/year/filtered?year_selected=2021'
-
-    assert list(scrape.scrape_chart_page(args, chart_url).keys()) == cfg.CHART_PAGE_COLUMNS
+    assert list(scrape.scrape_albums_details(args, soup).keys()) == cfg.CHART_PAGE_COLUMNS1
 
 
-def test_scrape_chart_page_exception_max_zero_or_negative():
-    chart_url = 'https://www.metacritic.com/browse/albums/score/metascore/year/filtered?year_selected=2021'
+def test_scrape_albums_scores_max_bigger_than_chart_length():
+    args = scrape.parse_args(cfg.ARGS_4_TESTS + ['-m1000'])
+    chart_url = cfg.TEST_CHART
+    soup = scrape.use_grequests([chart_url])[0]
+    chart_length = 1
+
+    assert list(scrape.scrape_albums_scores(args, soup, chart_length).keys()) == cfg.CHART_PAGE_COLUMNS2
+
+
+def test_scrape_albums_details_exception_max_zero_or_negative():
+    chart_url = cfg.TEST_CHART
+    soup = scrape.use_grequests([chart_url])[0]
 
     args = scrape.parse_args(cfg.ARGS_4_TESTS + ['-m0'])
     with pytest.raises(ValueError):
-        scrape.scrape_chart_page(args, chart_url)
+        scrape.scrape_albums_details(args, soup)
 
     args = scrape.parse_args(cfg.ARGS_4_TESTS + ['-m-10'])
     with pytest.raises(ValueError):
-        scrape.scrape_chart_page(args, chart_url)
+        scrape.scrape_albums_details(args, soup)
 
 
-def test_scrape_chart_page_creates_dictionary():
+def test_scrape_albums_scores_exception_max_zero_or_negative():
+    chart_url = cfg.TEST_CHART
+    soup = scrape.use_grequests([chart_url])[0]
+    chart_length = 1
+
+    args = scrape.parse_args(cfg.ARGS_4_TESTS + ['-m0'])
+    with pytest.raises(ValueError):
+        scrape.scrape_albums_scores(args, soup, chart_length)
+
+    args = scrape.parse_args(cfg.ARGS_4_TESTS + ['-m-10'])
+    with pytest.raises(ValueError):
+        scrape.scrape_albums_scores(args, soup, chart_length)
+
+
+def test_scrape_albums_details_creates_dictionary():
     args = scrape.parse_args(cfg.ARGS_4_TESTS)
-    chart_url = 'https://www.metacritic.com/browse/albums/score/metascore/year/filtered?year_selected=2021'
-    list(scrape.scrape_chart_page(args, chart_url).keys())
-    assert list(scrape.scrape_chart_page(args, chart_url).keys()) == cfg.CHART_PAGE_COLUMNS
+    chart_url = cfg.TEST_CHART
+    soup = scrape.use_grequests([chart_url])[0]
+
+    assert list(scrape.scrape_albums_details(args, soup).keys()) == cfg.CHART_PAGE_COLUMNS1
 
 
-def test_scrape_chart_page_exception_not_chart_page():
+def test_scrape_albums_scores_creates_dictionary():
+    args = scrape.parse_args(cfg.ARGS_4_TESTS)
+    chart_url = cfg.TEST_CHART
+    soup = scrape.use_grequests([chart_url])[0]
+    chart_length = 1
+
+    assert list(scrape.scrape_albums_scores(args, soup, chart_length).keys()) == cfg.CHART_PAGE_COLUMNS2
+
+
+def test_scrape_albums_details_exception_not_chart_page():
     args = scrape.parse_args(cfg.ARGS_4_TESTS)
     chart_url = 'https://www.metacritic.com/'
+    soup = scrape.use_grequests([chart_url])[0]
 
     with pytest.raises(AttributeError):
-        scrape.scrape_chart_page(args, chart_url)
+        scrape.scrape_albums_details(args, soup)
