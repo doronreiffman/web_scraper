@@ -24,12 +24,12 @@ def connect_to_db(login_info, database=''):
     """
 
     if database == '':
-        connect = pymysql.connect(host='localhost',
+        connect = pymysql.connect(host=login_info['hostname'],
                                   user=login_info['username'],
                                   password=login_info['password'],
                                   cursorclass=pymysql.cursors.DictCursor)
     else:
-        connect = pymysql.connect(host='localhost',
+        connect = pymysql.connect(host=login_info['hostname'],
                                   user=login_info['username'],
                                   password=login_info['password'],
                                   database=database,

@@ -494,6 +494,7 @@ def parse_args(args_string_list):
     subparser = parser.add_subparsers(dest='command')
 
     login = subparser.add_parser('login', help=f'Update login information. "login -h" for more information')
+    login.add_argument('--host', type=str, required=False)
     login.add_argument('--username', type=str, required=True)
     login.add_argument('--password', type=str, required=True)
 
@@ -526,8 +527,13 @@ def main():
     with open("login.json", "r") as openfile:
         login_info = json.load(openfile)
 
-    # Update user login information
+    # Update user login information for connection
     if args.command == 'login':
+        if args.host:
+            with open("login.json", "w") as outfile:
+                login_info['hostname'] = args.host
+                json.dump(login_info, outfile)
+
         if args.username:
             with open("login.json", "w") as outfile:
                 login_info['username'] = args.username
