@@ -181,8 +181,8 @@ def chart_history_table_description():
 
 def create_top_albums_db(login_info):
     """
-    Creates a database called 'top_albums' using login info given as a parameter.
-    top_albums will hold the tables required to store data scraped from the album charts on the
+    Creates a database called 'doron_yair' using login info given as a parameter.
+    doron_yair will hold the tables required to store data scraped from the album charts on the
     website Metacritic.
     See the README file for information on the tables and their columns
     :param login_info: a dictionary with the username and password information
@@ -190,14 +190,14 @@ def create_top_albums_db(login_info):
 
     with connect_to_db(login_info) as cursor:
 
-        # Delete top_albums database if it exists, and then create top_albums
-        sql_drop = "DROP DATABASE IF EXISTS top_albums"
+        # Delete doron_yair database if it exists, and then create doron_yair
+        sql_drop = "DROP DATABASE IF EXISTS doron_yair"
         cursor.execute(sql_drop)
-        sql = "CREATE DATABASE top_albums"
+        sql = "CREATE DATABASE doron_yair"
         cursor.execute(sql)
 
-        # Uses top_albums database
-        sql_use = "USE top_albums"
+        # Uses doron_yair database
+        sql_use = "USE doron_yair"
         cursor.execute(sql_use)
 
         sql_create_tables = dict()
@@ -227,7 +227,7 @@ def create_top_albums_db(login_info):
 
 def update_charts_table(cursor, filter_by_arg, year_arg, sort_by_arg):
     """
-    Take dictionary of scraped data and add relevant information to charts table in top_albums database
+    Take dictionary of scraped data and add relevant information to charts table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param filter_by_arg: a string with the filter method used
     :param year_arg: a string with the year used in the filter
@@ -255,7 +255,7 @@ def update_charts_table(cursor, filter_by_arg, year_arg, sort_by_arg):
 
 def update_albums_table(cursor, row, artist_id, publisher_id, summary_id):
     """
-    Take dictionary of scraped data and add relevant information to albums table in top_albums database
+    Take dictionary of scraped data and add relevant information to albums table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param row: a Series with the scrapped information of an album from the chart
     :param artist_id:
@@ -290,7 +290,7 @@ def update_albums_table(cursor, row, artist_id, publisher_id, summary_id):
 
 def update_artists_table(cursor, row):
     """
-    Take dictionary of scraped data and add relevant information to artists table in top_albums database
+    Take dictionary of scraped data and add relevant information to artists table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param row: a Series with the scrapped information of an album from the chart
     :return: cursor: cursor of pymysql.connect
@@ -317,7 +317,7 @@ def update_artists_table(cursor, row):
 
 def update_summaries_table(cursor, row):
     """
-    Take dictionary of scraped data and add relevant information to summaries table in top_albums database
+    Take dictionary of scraped data and add relevant information to summaries table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param row: a Series with the scrapped information of an album from the chart
     :return: cursor: cursor of pymysql.connect
@@ -343,7 +343,7 @@ def update_summaries_table(cursor, row):
 
 def update_publishers_table(cursor, row):
     """
-    Take dictionary of scraped data and add relevant information to publishers table in top_albums database
+    Take dictionary of scraped data and add relevant information to publishers table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param row: a Series with the scrapped information of an album from the chart
     :return: cursor: cursor of pymysql.connect
@@ -370,7 +370,7 @@ def update_publishers_table(cursor, row):
 
 def update_genres_table(cursor, row):
     """
-    Take dictionary of scraped data and add relevant information to genres table in top_albums database
+    Take dictionary of scraped data and add relevant information to genres table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param row: a Series with the scrapped information of an album from the chart
     :return: cursor: cursor of pymysql.connect
@@ -398,7 +398,7 @@ def update_genres_table(cursor, row):
 
 def update_markets_table(cursor, row):
     """
-    Take dictionary of scraped data and add relevant information to markets table in top_albums database
+    Take dictionary of scraped data and add relevant information to markets table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param row: a Series with the scrapped information of an album from the chart
     :return: cursor: cursor of pymysql.connect
@@ -427,7 +427,7 @@ def update_markets_table(cursor, row):
 
 def update_albums_to_markets(cursor, album_id, market_id_list):
     """
-    Take dictionary of scraped data and add relevant information to markets table in top_albums database
+    Take dictionary of scraped data and add relevant information to markets table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param album_id:
     :param market_id_list:
@@ -452,7 +452,7 @@ def update_albums_to_markets(cursor, album_id, market_id_list):
 
 def update_albums_to_genres(cursor, album_id, genre_id_list):
     """
-    Take dictionary of scraped data and add relevant information to genres table in top_albums database
+    Take dictionary of scraped data and add relevant information to genres table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param album_id:
     :param genre_id_list:
@@ -477,7 +477,7 @@ def update_albums_to_genres(cursor, album_id, genre_id_list):
 
 def update_chart_history_table(cursor, row, chart_id, album_id):
     """
-    Take dictionary of scraped data and add relevant information to chart_history table in top_albums database
+    Take dictionary of scraped data and add relevant information to chart_history table in doron_yair database
     :param cursor: cursor of pymysql.connect
     :param row: a Series with the scrapped information of an album from the chart
     :param chart_id:
@@ -509,10 +509,10 @@ def add_data(albums_df, login_info, filter_by_arg, year_arg, sort_by_arg):
     """
 
     # Connect host
-    with connect_to_db(login_info, database='top_albums') as cursor:
+    with connect_to_db(login_info, database='doron_yair') as cursor:
 
-        # Use top_albums database
-        sql_use = "USE top_albums"
+        # Use doron_yair database
+        sql_use = "USE doron_yair"
         cursor.execute(sql_use)
         cursor.execute("COMMIT")
 
