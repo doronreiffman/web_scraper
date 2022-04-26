@@ -87,7 +87,7 @@ def use_grequests(page_url):
             logging.info(f"{page_url[i]} was requested successfully.")
         else:
             logging.warning(f"{page_url[i]} was not requested successfully. Exiting program.")
-            continue
+            raise AttributeError(f'The link was not valid for scraping\n{page_url[i]}')
         soups.append(BeautifulSoup(page.content, 'html.parser'))
 
     return soups
