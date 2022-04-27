@@ -83,7 +83,7 @@ def use_grequests(page_url):
     soups = []
     for i, page in enumerate(pages):
         # check if there was a successful response
-        if page.status_code and (cfg.REQ_STATUS_LOWER <= page.status_code <= cfg.REQ_STATUS_UPPER):
+        if hasattr(page, 'status_code') and (cfg.REQ_STATUS_LOWER <= page.status_code <= cfg.REQ_STATUS_UPPER):
             logging.info(f"{page_url[i]} was requested successfully.")
         else:
             logging.warning(f"{page_url[i]} was not requested successfully. Exiting program.")

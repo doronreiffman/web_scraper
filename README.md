@@ -56,13 +56,13 @@ The program then stores all the information to a database called top_albums.
   pip install -r requirements.txt
 ```
 
-### Save MySQL login information
-
+### Save SQL login information
 
 ```bash
-  python ./metacritic_scraper.py login --username your_username --password your_password
+  python ./metacritic_scraper.py login --username your_username --password your_password --host host_name
 ```
 * **Note: The login information is saved in login.json file**
+
 
 ### Create top_albums database
 
@@ -122,11 +122,12 @@ positional arguments:
     update              Update database. "update -h" for more information
 ```
 ```bash
-python ./metacritic_scraper.py login  -h
-usage: metacritic_scraper.py login [-h] --username USERNAME --password PASSWORD
+python ./metacritic_scraper.py login -h   
+usage: metacritic_scraper.py login [-h] [--host HOST] --username USERNAME --password PASSWORD
 
 options:
   -h, --help           show this help message and exit
+  --host HOST
   --username USERNAME
   --password PASSWORD
 ```
